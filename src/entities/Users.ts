@@ -3,11 +3,14 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AccountBook } from './AccountBook';
+import { RefreshToken } from './RefreshToken';
 
 @Entity()
 export class Users {
@@ -25,7 +28,7 @@ export class Users {
     example: 'siu@naver.com',
     description: '이메일',
   })
-  @Column('varchar', { name: 'email', unique: true, length: 30 })
+  @Column({ type: 'varchar', name: 'email', unique: true, length: 30 })
   email: string;
 
   @IsNotEmpty()
@@ -34,7 +37,7 @@ export class Users {
     example: '가계부잘세워요',
     description: '닉네임',
   })
-  @Column('varchar', { name: 'nickname', unique: true, length: 30 })
+  @Column({ type: 'varchar', name: 'nickname', unique: true, length: 30 })
   nickname: string;
 
   @IsNotEmpty()
@@ -43,7 +46,7 @@ export class Users {
     example: 'A$dawjdo123',
     description: '비밀번호',
   })
-  @Column('varchar', { name: 'password', length: 200, select: false })
+  @Column({ type: 'varchar', name: 'password', length: 200, select: false })
   password: string;
 
   @CreateDateColumn()
@@ -52,6 +55,11 @@ export class Users {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date | null;
+  @OneToOne(() => AccountBook)
+  @JoinColumn([{ name: 'accountbookId', referencedColumnName: 'id' }])
+  accountbook: AccountBook;
+
+  @OneToOne(() => RefreshToken)
+  @JoinColumn([{ name: 'refreshtokenId', referencedColumnName: 'id' }])
+  refreshtoken: RefreshToken;
 }
