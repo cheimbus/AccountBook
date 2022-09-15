@@ -25,7 +25,7 @@ export class RefreshToken {
     description: '현재 RefreshToken',
   })
   @Column({ type: 'varchar', name: 'refresh_token', nullable: true })
-  // null값과 token값을 넣어야 하므로 nullable:true로 설정 기본은 false
+  // null값 또는 token값을 넣어야 하므로 nullable:true로 설정 기본은 false
   refresh_token: string | null;
 
   @CreateDateColumn()

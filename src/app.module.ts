@@ -3,6 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AccountBook } from './entities/AccountBook';
+import { RefreshToken } from './entities/RefreshToken';
+import { TodayExpenses } from './entities/TodayExpenses';
 import { Users } from './entities/Users';
 
 @Module({
@@ -33,7 +36,7 @@ import { Users } from './entities/Users';
             configService.get('TEST') === 'true'
               ? configService.get('TEST_DATABASE')
               : configService.get('DATABASE'),
-          entities: [Users],
+          entities: [Users, AccountBook, RefreshToken, TodayExpenses],
           migrations: [__dirname + '/src/migarions/*.ts'],
 
           cli: { migrationsDir: 'src/migrations' },

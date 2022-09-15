@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AccountBook } from './AccountBook';
 
 @Entity()
 export class TodayExpenses {
@@ -44,4 +47,11 @@ export class TodayExpenses {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @ManyToOne(() => AccountBook, (accountBook) => accountBook.TodayExpenses, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'accountbookId', referencedColumnName: 'id' }])
+  accountBook: AccountBook;
 }

@@ -9,9 +9,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TodayExpenses } from './TodayExpenses';
 
 @Entity()
 export class AccountBook {
@@ -55,7 +57,7 @@ export class AccountBook {
     example: 20000,
     description: '현재 금액. 이것은 today_expenses와 합산해서 넣어지는 값이다.',
   })
-  @Column({ type: 'int', name: 'current_money' })
+  @Column({ type: 'int', name: 'current_money', default: 0 })
   current_money: number;
 
   @IsNotEmpty()
@@ -73,4 +75,7 @@ export class AccountBook {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => TodayExpenses, (todayExpenses) => todayExpenses.accountBook)
+  TodayExpenses: TodayExpenses;
 }
