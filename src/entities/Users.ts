@@ -27,6 +27,7 @@ export class Users {
   @ApiProperty({
     example: 'siu@naver.com',
     description: '이메일',
+    required: true,
   })
   @Column({ type: 'varchar', name: 'email', unique: true, length: 30 })
   email: string;
@@ -36,6 +37,7 @@ export class Users {
   @ApiProperty({
     example: '가계부잘세워요',
     description: '닉네임',
+    required: true,
   })
   @Column({ type: 'varchar', name: 'nickname', unique: true, length: 30 })
   nickname: string;
@@ -45,6 +47,7 @@ export class Users {
   @ApiProperty({
     example: 'A$dawjdo123',
     description: '비밀번호',
+    required: true,
   })
   @Column({ type: 'varchar', name: 'password', length: 200, select: false })
   password: string;

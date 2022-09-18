@@ -28,6 +28,7 @@ export class AccountBook {
   @ApiProperty({
     example: '시우의 가계부',
     description: '가계부 이름',
+    required: true,
   })
   @Column({ type: 'varchar', name: 'name', length: 30 })
   name: string;
@@ -37,6 +38,7 @@ export class AccountBook {
   @ApiProperty({
     example: '티끌모아 태산 아끼자!',
     description: '각오',
+    required: true,
   })
   @Column({ type: 'varchar', name: 'determination', length: 30 })
   determiantion: string;
@@ -47,6 +49,7 @@ export class AccountBook {
     example: 30000,
     description:
       '투입 금액. 사용자는 처음 자신의 자산을 가계부에 작성해야한다.',
+    required: true,
   })
   @Column({ type: 'int', name: 'input_money' })
   input_money: number;
