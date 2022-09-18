@@ -49,17 +49,17 @@ export class Users {
   @Column({ type: 'varchar', name: 'password', length: 200, select: false })
   password: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   @OneToOne(() => AccountBook)
-  @JoinColumn([{ name: 'accountbookId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'account_book_id', referencedColumnName: 'id' }])
   accountbook: AccountBook;
 
   @OneToOne(() => RefreshToken)
-  @JoinColumn([{ name: 'refreshtokenId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'refresh_token_id', referencedColumnName: 'id' }])
   refreshtoken: RefreshToken;
 }

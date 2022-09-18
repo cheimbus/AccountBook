@@ -70,10 +70,10 @@ export class AccountBook {
   @Column({ type: 'varchar', name: 'is_deleted' })
   is_deleted: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_ad' })
   updatedAt: Date;
 
   @OneToMany(() => TodayExpenses, (todayExpenses) => todayExpenses.accountBook)
