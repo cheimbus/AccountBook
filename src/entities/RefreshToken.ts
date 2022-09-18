@@ -3,7 +3,6 @@ import { IsString, ValidateIf } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -28,12 +27,9 @@ export class RefreshToken {
   // null값 또는 token값을 넣어야 하므로 nullable:true로 설정 기본은 false
   refresh_token: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 }

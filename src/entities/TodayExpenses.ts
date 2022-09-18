@@ -39,19 +39,19 @@ export class TodayExpenses {
   @Column({ type: 'varchar', name: 'memo' })
   memo: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
   @ManyToOne(() => AccountBook, (accountBook) => accountBook.TodayExpenses, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'accountbookId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'account_book_id', referencedColumnName: 'id' }])
   accountBook: AccountBook;
 }
