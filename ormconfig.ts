@@ -1,6 +1,10 @@
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import path from 'path';
+import { AccountBook } from 'src/entities/AccountBook';
+import { Users } from 'src/entities/Users';
+import { RefreshToken } from 'src/entities/RefreshToken';
+import { TodayExpenses } from 'src/entities/TodayExpenses';
 
 dotenv.config();
 
@@ -23,8 +27,8 @@ const dataSource = new DataSource({
     process.env.TEST === 'true'
       ? process.env.TEST_DATABASE
       : process.env.DATABASE,
-  entities: [path.join(__dirname, '/src/entities/*')],
-  migrations: [path.join(__dirname + '/src/migrations/*.ts')],
+  entities: [AccountBook, Users, RefreshToken, TodayExpenses],
+  migrations: [path.join(__dirname, '/src/migrations/*.ts')],
   charset: 'utf8mb4',
   migrationsRun: true,
   synchronize: false,

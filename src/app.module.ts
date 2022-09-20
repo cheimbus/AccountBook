@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import path from 'path/posix';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AccountBook } from './entities/AccountBook';
 import { RefreshToken } from './entities/RefreshToken';
 import { TodayExpenses } from './entities/TodayExpenses';
 import { Users } from './entities/Users';
+import { UsersModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -36,9 +38,7 @@ import { Users } from './entities/Users';
             configService.get('TEST') === 'true'
               ? configService.get('TEST_DATABASE')
               : configService.get('DATABASE'),
-          entities: [Users, AccountBook, RefreshToken, TodayExpenses],
-          migrations: [__dirname + '/src/migarions/*.ts'],
-
+          entities: [path.join(__dirname, 'src/entitis/*')],
           cli: { migrationsDir: 'src/migrations' },
           charset: 'utf8mb4',
           synchronize: false,
@@ -48,6 +48,7 @@ import { Users } from './entities/Users';
         };
       },
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
