@@ -4,21 +4,24 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import expressBasicAuth from 'express-basic-auth';
 import { ValidationPipe } from '@nestjs/common';
-
+import { HttpExceptionFilter } from './common/http-exception.filter';
+import { successInterceptor } from './common/success.interceptor';
+import cookieParser from 'cookie-parser';
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
-
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new successInterceptor());
+  app.use(cookieParser());
   const configService = app.get<ConfigService>(ConfigService);
 
   const config = new DocumentBuilder()
     .setTitle('Account Book API')
     .setDescription('가계부 API입니다.')
     .setVersion('1.0')
-    // .addTag('cats')
     .build();
 
   app.use(

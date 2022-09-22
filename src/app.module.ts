@@ -9,10 +9,12 @@ import { RefreshToken } from './entities/RefreshToken';
 import { TodayExpenses } from './entities/TodayExpenses';
 import { Users } from './entities/Users';
 import { UsersModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forFeature([Users, AccountBook, RefreshToken, TodayExpenses]),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
@@ -49,6 +51,7 @@ import { UsersModule } from './user/user.module';
       },
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
