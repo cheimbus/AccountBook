@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import dataSource from 'ormconfig';
 import { Users } from 'src/entities/Users';
 import bcrypt from 'bcrypt';
@@ -7,7 +11,11 @@ import { AccountBook } from 'src/entities/AccountBook';
 
 @Injectable()
 export class UsersService {
-  async createUser(email: string, nickname: string, password: string) {
+  async createUser(
+    email: string,
+    nickname: string,
+    password: string,
+  ): Promise<any> {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
@@ -48,6 +56,32 @@ export class UsersService {
       await queryRunner.commitTransaction();
       return { user: withoutPassword };
     } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async modifyUserInfo(
+    id: number,
+    email: string,
+    nickname: string,
+    password: string,
+  ): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    try {
+      const hashedPassword = await bcrypt.hash(password, 12);
+      await queryRunner.manager.update(Users, id, {
+        email,
+        nickname,
+        password: hashedPassword,
+      });
+      await queryRunner.commitTransaction();
+      return;
+    } catch (err) {
+      console.log(err);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
