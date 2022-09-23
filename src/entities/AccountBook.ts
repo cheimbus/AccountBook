@@ -46,7 +46,7 @@ export class AccountBook {
     length: 30,
     nullable: true,
   })
-  determiantion: string;
+  determination: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -65,7 +65,7 @@ export class AccountBook {
     example: 20000,
     description: '현재 금액. 이것은 today_expenses와 합산해서 넣어지는 값이다.',
   })
-  @Column({ type: 'int', name: 'current_money', default: 0, nullable: true })
+  @Column({ type: 'int', name: 'current_money', default: 0 })
   current_money: number;
 
   @IsNotEmpty()
@@ -75,8 +75,8 @@ export class AccountBook {
     description:
       'soft delete를 하기위해 설정. string형식으로 true, false를 작성하되, true는 삭제된 가계부이고 false는 삭제가 안된 가계부이다. 가계부를 불러올 때 false인 가계부를 불러와야함',
   })
-  @Column({ type: 'varchar', name: 'is_deleted', nullable: true })
-  is_deleted: string;
+  @Column({ type: 'boolean', name: 'is_deleted', default: false })
+  is_deleted: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

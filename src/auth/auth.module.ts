@@ -8,6 +8,7 @@ import { RefreshToken } from 'src/entities/RefreshToken';
 import { TodayExpenses } from 'src/entities/TodayExpenses';
 import { Users } from 'src/entities/Users';
 import { UsersModule } from 'src/user/user.module';
+import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAccessTokenStrategy } from './jwt/jwt.access.token.strategy';
 import { JwtRefreshTokenStrategy } from './jwt/jwt.refresh.token.strategy';
@@ -30,6 +31,7 @@ import { JwtRefreshTokenStrategy } from './jwt/jwt.refresh.token.strategy';
     }),
   ],
   providers: [AuthService, JwtAccessTokenStrategy, JwtRefreshTokenStrategy],
+  controllers: [AuthController],
   exports: [AuthService],
 })
 export class AuthModule {}
