@@ -57,9 +57,9 @@ export class Users {
 
   @OneToOne(() => AccountBook)
   @JoinColumn([{ name: 'account_book_id', referencedColumnName: 'id' }])
-  accountbook: AccountBook;
+  accountbookId: AccountBook;
 
   @OneToOne(() => RefreshToken)
   @JoinColumn([{ name: 'refresh_token_id', referencedColumnName: 'id' }])
-  refreshtoken: RefreshToken;
+  refreshtokenId: RefreshToken;
 }

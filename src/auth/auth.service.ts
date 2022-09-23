@@ -60,7 +60,7 @@ export class AuthService {
       domain: 'localhost',
       path: '/',
       httpOnly: true,
-      maxAge: 60 * 5,
+      maxAge: 60 * 60,
     };
     return { accessToken, accessTokenCookieOption };
   }
@@ -78,7 +78,7 @@ export class AuthService {
       domain: 'localhost',
       path: '/',
       httpOnly: true,
-      maxAge: 60 * 30,
+      maxAge: 60 * 60 * 12,
     };
     return { refreshToken, refreshTokenCookieOption };
   }

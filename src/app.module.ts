@@ -10,6 +10,8 @@ import { TodayExpenses } from './entities/TodayExpenses';
 import { Users } from './entities/Users';
 import { UsersModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { AccountbookModule } from './accountbook/accountbook.module';
+import { TodayexpensesModule } from './todayexpenses/todayexpenses.module';
 
 @Module({
   imports: [
@@ -52,6 +54,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    AccountbookModule,
+    TodayexpensesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
