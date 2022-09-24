@@ -13,10 +13,6 @@ export class AccountbookService {
     @InjectRepository(Users) private userRepository: Repository<Users>,
   ) {}
 
-  //   async getMyAccountBook(id: number): Promise<any> {
-  //       const accountbook = this.
-  //   }
-
   async createAccountBook(
     id: number,
     name: string,
@@ -37,35 +33,129 @@ export class AccountbookService {
         id: userInfoWithAccountbookId.accountbookId.id,
       })
       .getOne();
-    /**
-     * try 안에서 http메세지를 사용하면 httpexception이 제대로 안된다.
-     * 따라서 http메세지를 처리할 경우 try를 사용할 때 한정해서 바깥에서 처리한다.
-     **/
+    if (myAccountBook.name !== null) {
+      throw new ForbiddenException('하나의 가계부만 생성가능합니다.');
+    }
     if (input_money < 0) {
       throw new ForbiddenException('돈을 넣을 때는 양수만 입력 가능합니다.');
     }
     try {
-      if (myAccountBook) {
-        throw new ForbiddenException('가계부는 한 개만 생성할 수 있습니다.');
-      }
       const currentMoney = myAccountBook.current_money;
       const addInputMoneyWithCurrentMoney = input_money + currentMoney;
-      await queryRunner.manager.update(
-        AccountBook,
-        userInfoWithAccountbookId.accountbookId.id,
-        {
-          name,
-          determination,
-          input_money,
-          current_money: addInputMoneyWithCurrentMoney,
-        },
-      );
+      await queryRunner.manager.update(AccountBook, id, {
+        name,
+        determination,
+        input_money,
+        current_money: addInputMoneyWithCurrentMoney,
+      });
       await queryRunner.commitTransaction();
-      return myAccountBook;
+      return;
+    } catch (err) {
+      console.log(err);
+      queryRunner.rollbackTransaction();
+    } finally {
+      queryRunner.release();
+    }
+  }
+
+  async modifyMyAccountBook(
+    id: number,
+    name: string,
+    determination: string,
+    input_money: number,
+  ): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    const userInfoWithAccountbookId = await this.userRepository.findOne({
+      where: { id },
+      relations: { accountbookId: true },
+    });
+    const myAccountBook = await queryRunner.manager
+      .getRepository(AccountBook)
+      .createQueryBuilder('accountbook')
+      .where('accountbook.id=:id', {
+        id: userInfoWithAccountbookId.accountbookId.id,
+      })
+      .getOne();
+    try {
+      const currentMoney = myAccountBook.current_money;
+      const addInputMoneyWithCurrentMoney = input_money + currentMoney;
+      await queryRunner.manager.update(AccountBook, id, {
+        name,
+        determination,
+        input_money,
+        current_money: addInputMoneyWithCurrentMoney,
+      });
+      await queryRunner.commitTransaction();
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();
-      throw new ForbiddenException('가계부는 한 개만 생성할 수 있습니다.');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async softDeleteMyAccountBook(id: number): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    const userInfoWithAccountbookId = await this.userRepository.findOne({
+      where: { id },
+      relations: { accountbookId: true },
+    });
+    const myAccountBook = await queryRunner.manager
+      .getRepository(AccountBook)
+      .createQueryBuilder('accountbook')
+      .where('accountbook.id=:id', {
+        id: userInfoWithAccountbookId.accountbookId.id,
+      })
+      .getOne();
+    try {
+      await queryRunner.manager.update(AccountBook, myAccountBook.id, {
+        is_deleted: true,
+      });
+      await queryRunner.commitTransaction();
+      return;
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async restoreMyAccountBook(id: number): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    const userInfoWithAccountbookId = await this.userRepository.findOne({
+      where: { id },
+      relations: { accountbookId: true },
+    });
+    const myAccountBook = await queryRunner.manager
+      .getRepository(AccountBook)
+      .createQueryBuilder('accountbook')
+      .where('accountbook.id=:id', {
+        id: userInfoWithAccountbookId.accountbookId.id,
+      })
+      .getOne();
+    try {
+      await queryRunner.manager.update(AccountBook, myAccountBook.id, {
+        is_deleted: false,
+      });
+      const updated = await queryRunner.manager
+        .getRepository(AccountBook)
+        .createQueryBuilder('accountbook')
+        .where('accountbook.id=:id', {
+          id: userInfoWithAccountbookId.accountbookId.id,
+        })
+        .getOne();
+      await queryRunner.commitTransaction();
+      return { message: '복구되었습니다!', accountbook: updated };
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
     }
