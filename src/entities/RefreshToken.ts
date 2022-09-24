@@ -23,7 +23,12 @@ export class RefreshToken {
     example: 'dfDSFEWekw#$199dAFS.fasfjdsfknDSF123.SDAFDSf3',
     description: '현재 RefreshToken',
   })
-  @Column({ type: 'varchar', name: 'refresh_token', nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'refresh_token',
+    nullable: true,
+    default: null,
+  })
   // null값 또는 token값을 넣어야 하므로 nullable:true로 설정 기본은 false
   refresh_token: string | null;
 

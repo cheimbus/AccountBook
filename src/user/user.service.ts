@@ -34,11 +34,6 @@ export class UsersService {
       await queryRunner.manager.save(refresh_token);
 
       const account_book = new AccountBook();
-      account_book.name = null;
-      account_book.determination = null;
-      account_book.input_money = null;
-      account_book.current_money = 0;
-      account_book.is_deleted = false;
       await queryRunner.manager.save(account_book);
 
       const user = new Users();

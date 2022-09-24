@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  ValidateIf,
 } from 'class-validator';
 import {
   Column,
@@ -23,17 +24,23 @@ export class AccountBook {
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  @IsNotEmpty()
   @IsString()
+  @ValidateIf((object, value) => value !== null)
   @ApiProperty({
     example: '시우의 가계부',
     description: '가계부 이름',
     required: true,
   })
-  @Column({ type: 'varchar', name: 'name', length: 30, nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'name',
+    length: 30,
+    nullable: true,
+    default: null,
+  })
   name: string;
 
-  @IsNotEmpty()
+  @ValidateIf((object, value) => value !== null)
   @IsString()
   @ApiProperty({
     example: '티끌모아 태산 아끼자!',
@@ -45,6 +52,7 @@ export class AccountBook {
     name: 'determination',
     length: 30,
     nullable: true,
+    default: null,
   })
   determination: string;
 
@@ -56,7 +64,7 @@ export class AccountBook {
       '투입 금액. 사용자는 처음 자신의 자산을 가계부에 작성해야한다.',
     required: true,
   })
-  @Column({ type: 'int', name: 'input_money', nullable: true })
+  @Column({ type: 'int', name: 'input_money', default: 0 })
   input_money: number;
 
   @IsNotEmpty()
