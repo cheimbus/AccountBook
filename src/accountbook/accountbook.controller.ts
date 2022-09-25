@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAccessTokenAuthGuard } from 'src/auth/jwt/jwt.access.token.auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.request.decorator';
@@ -31,13 +31,12 @@ export class AccountbookController {
     @CurrentUser() user: UserIdDto,
     @Body() data: AccountbookDto,
   ): Promise<any> {
-    await this.accountbookService.createAccountBook(
+    return await this.accountbookService.createAccountBook(
       user.id,
       data.name,
       data.determination,
       data.input_money,
     );
-    return '가계부가 생성되었습니다!';
   }
 
   @ApiOperation({

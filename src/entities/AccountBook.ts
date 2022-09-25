@@ -89,6 +89,9 @@ export class AccountBook {
   @UpdateDateColumn({ name: 'updated_ad' })
   updatedAt: Date;
 
-  @OneToMany(() => TodayExpenses, (todayExpenses) => todayExpenses.accountBook)
+  @OneToMany(
+    () => TodayExpenses,
+    (todayExpenses) => todayExpenses.accountBookId,
+  )
   TodayExpenses: TodayExpenses;
 }
