@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, ValidateIf } from 'class-validator';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class RefreshToken {
@@ -32,9 +26,11 @@ export class RefreshToken {
   // null값 또는 token값을 넣어야 하므로 nullable:true로 설정 기본은 false
   refresh_token: string | null;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  @Column({
+    type: 'varchar',
+    name: 'created_at',
+    nullable: true,
+    default: null,
+  })
+  createdAt: string | null;
 }

@@ -1,19 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBooleanString,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  ValidateIf,
-} from 'class-validator';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { IsBooleanString, IsNotEmpty, IsNumber } from 'class-validator';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TodayExpenses } from './TodayExpenses';
 
 @Entity()
@@ -24,8 +11,7 @@ export class AccountBook {
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-  @IsString()
-  @ValidateIf((object, value) => value !== null)
+
   @ApiProperty({
     example: '시우의 가계부',
     description: '가계부 이름',
@@ -39,8 +25,6 @@ export class AccountBook {
   })
   name: string;
 
-  @ValidateIf((object, value) => value !== null)
-  @IsString()
   @ApiProperty({
     example: '티끌모아 태산 아끼자!',
     description: '각오',
@@ -83,11 +67,29 @@ export class AccountBook {
   @Column({ type: 'boolean', name: 'is_deleted', default: false })
   is_deleted: boolean;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  @Column({
+    type: 'varchar',
+    name: 'created_at',
+    default: null,
+    nullable: true,
+  })
+  createdAt: string | null;
 
-  @UpdateDateColumn({ name: 'updated_ad' })
-  updatedAt: Date;
+  @Column({
+    type: 'varchar',
+    name: 'updated_at',
+    default: null,
+    nullable: true,
+  })
+  updatedAt: string | null;
+
+  @Column({
+    type: 'varchar',
+    name: 'deleted_at',
+    default: null,
+    nullable: true,
+  })
+  deletedAt: string | null;
 
   @OneToMany(
     () => TodayExpenses,

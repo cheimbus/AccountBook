@@ -2,12 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { AccountBook } from './AccountBook';
 import { RefreshToken } from './RefreshToken';
@@ -49,11 +47,21 @@ export class Users {
   @Column({ type: 'varchar', name: 'password', length: 200, select: false })
   password: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  @Column({
+    type: 'varchar',
+    name: 'created_at',
+    nullable: true,
+    default: null,
+  })
+  createdAt: string | null;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  @Column({
+    type: 'varchar',
+    name: 'updated_at',
+    nullable: true,
+    default: null,
+  })
+  updatedAt: string | null;
 
   @OneToOne(() => AccountBook)
   @JoinColumn([{ name: 'account_book_id', referencedColumnName: 'id' }])

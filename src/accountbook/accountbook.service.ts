@@ -2,9 +2,10 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dataSource from 'ormconfig';
 import { AccountBook } from 'src/entities/AccountBook';
-import { TodayExpenses } from 'src/entities/TodayExpenses';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
 @Injectable()
 export class AccountbookService {
@@ -41,6 +42,7 @@ export class AccountbookService {
       throw new ForbiddenException('돈을 넣을 때는 양수만 입력 가능합니다.');
     }
     try {
+      dayjs.locale('ko');
       const currentMoney = myAccountBook.current_money;
       const addInputMoneyWithCurrentMoney = input_money + currentMoney;
       await queryRunner.manager.update(AccountBook, id, {
@@ -48,6 +50,7 @@ export class AccountbookService {
         determination,
         input_money,
         current_money: addInputMoneyWithCurrentMoney,
+        createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
       /**
@@ -58,6 +61,7 @@ export class AccountbookService {
         message: '가계부가 생성되었습니다!',
         data: {
           id: myAccountBook.id,
+          createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
           message:
             'id는 account_book foreignkey입니다. 이것을 이용하여 today_expenses를 생성할때 foreignkey를 정의합니다',
         },
@@ -91,15 +95,22 @@ export class AccountbookService {
       })
       .getOne();
     try {
+      dayjs.locale('ko');
+      const inputMoney = myAccountBook.input_money + input_money;
       const currentMoney = myAccountBook.current_money;
       const addInputMoneyWithCurrentMoney = input_money + currentMoney;
       await queryRunner.manager.update(AccountBook, id, {
         name,
         determination,
-        input_money,
+        input_money: inputMoney,
         current_money: addInputMoneyWithCurrentMoney,
+        updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
+      return {
+        message: '수정되었습니다!',
+        updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+      };
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();
@@ -124,11 +135,16 @@ export class AccountbookService {
       })
       .getOne();
     try {
+      dayjs.locale('ko');
       await queryRunner.manager.update(AccountBook, myAccountBook.id, {
         is_deleted: true,
+        deletedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
-      return;
+      return {
+        message: '삭제되었습니다!',
+        deletedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+      };
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();

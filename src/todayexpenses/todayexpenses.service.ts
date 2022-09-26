@@ -53,13 +53,61 @@ export class TodayexpensesService {
       todayExpenses.memo = memo;
       todayExpenses.createdAt = dayjs().format('YYYY.MM.DD dddd A HH:mm');
       todayExpenses.account_book_id = accountBookId;
-      await queryRunner.manager
+      const createTodayExpenses = await queryRunner.manager
         .getRepository(TodayExpenses)
         .save(todayExpenses);
       await queryRunner.commitTransaction();
       return {
-        message: '생성되었습니다',
+        id: createTodayExpenses.id,
+        message:
+          '생성되었습니다! id값은 today_expenses의 id이므로 수정할 때 사용됩니다.',
         createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+      };
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  async modifyTodayExpenses(
+    id: number,
+    accountBookId: number,
+    expenses: number,
+    memo: string,
+  ): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    if (expenses < 0) {
+      throw new ForbiddenException('비용은 양수를 입력해야 합니다.');
+    }
+    try {
+      const accountBook = await this.accountBookRepository.findOne({
+        where: { id: accountBookId },
+      });
+      const getTodayExpenses = await queryRunner.manager
+        .getRepository(TodayExpenses)
+        .createQueryBuilder('todayExpenses')
+        .where('todayExpenses.id=:id', { id })
+        .getOne();
+      const accountBookCurrentMoney = accountBook.current_money;
+      const currentMoney =
+        accountBookCurrentMoney - expenses + getTodayExpenses.expenses;
+      await queryRunner.manager.update(AccountBook, accountBookId, {
+        current_money: currentMoney,
+      });
+      dayjs.locale('ko');
+      await queryRunner.manager.update(TodayExpenses, getTodayExpenses.id, {
+        expenses,
+        memo,
+        updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+      });
+
+      await queryRunner.commitTransaction();
+      return {
+        message: '수정되었습니다!',
+        updatedAt: dayjs().format('YYYYY.MM.DD dddd A HH:mm'),
       };
     } catch (err) {
       console.log(err);

@@ -48,13 +48,12 @@ export class AccountbookController {
     @CurrentUser() user: UserIdDto,
     @Body() data: AccountbookDto,
   ): Promise<any> {
-    await this.accountbookService.modifyMyAccountBook(
+    return await this.accountbookService.modifyMyAccountBook(
       user.id,
       data.name,
       data.determination,
       data.input_money,
     );
-    return '가계부가 수정되었습니다!';
   }
 
   @ApiOperation({
@@ -63,8 +62,7 @@ export class AccountbookController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @Patch()
   async softDeleteMyAccountBook(@CurrentUser() user: UserIdDto): Promise<any> {
-    await this.accountbookService.softDeleteMyAccountBook(user.id);
-    return '삭제되었습니다!';
+    return await this.accountbookService.softDeleteMyAccountBook(user.id);
   }
 
   @ApiOperation({ summary: '삭제된 가계부 복구' })

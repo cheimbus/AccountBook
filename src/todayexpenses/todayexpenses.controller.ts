@@ -1,10 +1,9 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAccessTokenAuthGuard } from 'src/auth/jwt/jwt.access.token.auth.guard';
-import { CurrentUser } from 'src/common/decorators/user.request.decorator';
-import { UserDto } from 'src/user/dto/user.dto';
 import { TodayExpensesDto } from './dto/todayexpenses.dto';
+import { TodayExpensesModifyDto } from './dto/todayexpenses.modify.dto';
 import { TodayexpensesService } from './todayexpenses.service';
 
 @Controller('today-expenses')
@@ -22,6 +21,19 @@ export class TodayexpensesController {
   async createTodayExpenses(@Body() data: TodayExpensesDto): Promise<any> {
     return this.todayExpensesService.CreateTodayExpenses(
       data.id,
+      data.expenses,
+      data.memo,
+    );
+  }
+  @ApiOperation({ summary: '오늘 지출한 내역 수정' })
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @Patch()
+  async modifyTodayExpenses(
+    @Body() data: TodayExpensesModifyDto,
+  ): Promise<any> {
+    return this.todayExpensesService.modifyTodayExpenses(
+      data.id,
+      data.accountBookId,
       data.expenses,
       data.memo,
     );

@@ -2,12 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString, ValidateIf } from 'class-validator';
 import {
   Column,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { AccountBook } from './AccountBook';
 
@@ -57,11 +55,13 @@ export class TodayExpenses {
   })
   createdAt: string | null;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at' })
-  deletedAt: Date;
+  @Column({
+    type: 'varchar',
+    name: 'updated_at',
+    nullable: true,
+    default: null,
+  })
+  updatedAt: string | null;
 
   @ManyToOne(() => AccountBook, (accountBook) => accountBook.TodayExpenses, {
     onDelete: 'SET NULL',
