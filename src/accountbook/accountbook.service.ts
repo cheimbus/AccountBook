@@ -49,19 +49,19 @@ export class AccountbookService {
         input_money,
         current_money: addInputMoneyWithCurrentMoney,
       });
-      /**
-       * foreinkey에 number,string등 타입이 들어가지않기 때문에 Column을 새로 생성해서 타입을 지정함
-       */
-      const todayExpenses = new TodayExpenses();
-      todayExpenses.account_book_id =
-        userInfoWithAccountbookId.accountbookId.id;
-      const todayExpensesId = await queryRunner.manager.save(todayExpenses);
       await queryRunner.commitTransaction();
       /**
        * todayExpenses.id를 리턴하는 이유는 today_expenses에서 create할때 today_expenses.id를 가져오기 위함이다.
        * 따라서 요청할때 리턴받은 todayExpensesId.id를 body로 담아보내야한다.
        */
-      return { message: '가계부가 생성되었습니다!', data: todayExpensesId.id };
+      return {
+        message: '가계부가 생성되었습니다!',
+        data: {
+          id: myAccountBook.id,
+          message:
+            'id는 account_book foreignkey입니다. 이것을 이용하여 today_expenses를 생성할때 foreignkey를 정의합니다',
+        },
+      };
     } catch (err) {
       console.log(err);
       queryRunner.rollbackTransaction();

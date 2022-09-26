@@ -17,14 +17,10 @@ export class TodayexpensesController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @Post()
   /**
-   * 바디로 전달받은 expenses.id를 이용해서 expenses.id에 접근한다음 생성한다.
+   * body로 전달받은 account_book_id를 이용해서 today_expenses.account_book_id로 정의한다.
    */
-  async createTodayExpenses(
-    @CurrentUser() user: UserDto,
-    @Body() data: TodayExpensesDto,
-  ): Promise<any> {
+  async createTodayExpenses(@Body() data: TodayExpensesDto): Promise<any> {
     return this.todayExpensesService.CreateTodayExpenses(
-      user.id,
       data.id,
       data.expenses,
       data.memo,
