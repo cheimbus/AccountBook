@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dataSource from 'ormconfig';
 import { AuthService } from 'src/auth/auth.service';
@@ -109,6 +113,41 @@ export class TodayexpensesService {
         message: '수정되었습니다!',
         updatedAt: dayjs().format('YYYYY.MM.DD dddd A HH:mm'),
       };
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async getOneExpensesInfo(
+    id: number,
+    accountBookId: number,
+    userId: number,
+  ): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    const accountBookIdWithTodayExpenses = await queryRunner.manager
+      .getRepository(TodayExpenses)
+      .createQueryBuilder('todayExpenses')
+      .where('todayExpenses.account_book_id=:accountBookId', {
+        accountBookId,
+      })
+      .andWhere('todayExpenses.id=:id', { id })
+      .getOne();
+    if (accountBookIdWithTodayExpenses === null) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+    if (userId !== accountBookId) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+    try {
+      const { account_book_id, ...withoutAccountBookId } =
+        accountBookIdWithTodayExpenses;
+      await queryRunner.commitTransaction();
+      return withoutAccountBookId;
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();

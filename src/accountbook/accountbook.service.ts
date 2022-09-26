@@ -188,4 +188,6 @@ export class AccountbookService {
       await queryRunner.release();
     }
   }
+
+  async getMyAccountBookList(): Promise<any> {}
 }

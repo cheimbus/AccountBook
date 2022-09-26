@@ -1,9 +1,21 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAccessTokenAuthGuard } from 'src/auth/jwt/jwt.access.token.auth.guard';
+import { CurrentUser } from 'src/common/decorators/user.request.decorator';
+import { PositivePipe } from 'src/common/pipe/positive.int.pipe';
+import { UserIdDto } from 'src/user/dto/user.accountbookid.dto';
 import { TodayExpensesDto } from './dto/todayexpenses.dto';
 import { TodayExpensesModifyDto } from './dto/todayexpenses.modify.dto';
+import { AccountBookIdDto } from './dto/todayexpenses.param.dto';
 import { TodayexpensesService } from './todayexpenses.service';
 
 @Controller('today-expenses')
@@ -36,6 +48,21 @@ export class TodayexpensesController {
       data.accountBookId,
       data.expenses,
       data.memo,
+    );
+  }
+
+  @ApiOperation({ summary: '지출내용 불러오기' })
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @Get(':id')
+  async getOneExpensesInfo(
+    @Param('id', PositivePipe) id: number,
+    @Body() accountBookId: AccountBookIdDto,
+    @CurrentUser() user: UserIdDto,
+  ): Promise<any> {
+    return this.todayExpensesService.getOneExpensesInfo(
+      id,
+      accountBookId.accountBookId,
+      user.id,
     );
   }
 }

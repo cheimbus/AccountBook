@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAccessTokenAuthGuard } from 'src/auth/jwt/jwt.access.token.auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.request.decorator';
@@ -11,12 +11,12 @@ export class AccountbookController {
   constructor(private accountbookService: AccountbookService) {}
 
   // pagenation 적용해서 마지막으로 작성
-  // @ApiOperation({ summary: '나의 가계 불러오기' })
-  // @UseGuards(JwtAccessTokenAuthGuard)
-  // @Get()
-  // async getMyAccountBook(@CurrentUser() user): Promise<any> {
-  //   return this.accountbookService.
-  // }
+  @ApiOperation({ summary: '나의 가계부 불러오기' })
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @Get()
+  async getMyAccountBook(@CurrentUser() user): Promise<any> {
+    return this.accountbookService.getMyAccountBookList();
+  }
 
   /**
    *
