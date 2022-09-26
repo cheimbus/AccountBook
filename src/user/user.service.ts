@@ -4,6 +4,8 @@ import { Users } from 'src/entities/Users';
 import bcrypt from 'bcrypt';
 import { RefreshToken } from 'src/entities/RefreshToken';
 import { AccountBook } from 'src/entities/AccountBook';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
 @Injectable()
 export class UsersService {
@@ -29,8 +31,10 @@ export class UsersService {
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     try {
+      dayjs.locale('ko');
       const refresh_token = new RefreshToken();
       refresh_token.refresh_token = null;
+      refresh_token.createdAt = dayjs().format('YYYY.MM.DD dddd A HH:mm');
       await queryRunner.manager.save(refresh_token);
 
       const account_book = new AccountBook();
@@ -42,13 +46,17 @@ export class UsersService {
       user.password = hashedPassword;
       user.refreshtokenId = refresh_token;
       user.accountbookId = account_book;
+      user.createdAt = dayjs().format('YYYY.MM.DD dddd A HH:mm');
 
       const saveUser = await queryRunner.manager
         .getRepository(Users)
         .save(user);
       const { password, ...withoutPassword } = saveUser;
       await queryRunner.commitTransaction();
-      return { user: withoutPassword };
+      return {
+        user: withoutPassword,
+        createdAt: dayjs().format('YYYY.MM.DD dddd A HH.mm'),
+      };
     } catch (err) {
       await queryRunner.rollbackTransaction();
     } finally {
@@ -66,14 +74,19 @@ export class UsersService {
     queryRunner.connect();
     queryRunner.startTransaction();
     try {
+      dayjs.locale('ko');
       const hashedPassword = await bcrypt.hash(password, 12);
       await queryRunner.manager.update(Users, id, {
         email,
         nickname,
         password: hashedPassword,
+        updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
-      return;
+      return {
+        message: '수정되었습니다!',
+        updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+      };
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();

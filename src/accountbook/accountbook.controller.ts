@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAccessTokenAuthGuard } from 'src/auth/jwt/jwt.access.token.auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.request.decorator';
@@ -11,12 +11,12 @@ export class AccountbookController {
   constructor(private accountbookService: AccountbookService) {}
 
   // pagenation 적용해서 마지막으로 작성
-  // @ApiOperation({ summary: '나의 가계 불러오기' })
-  // @UseGuards(JwtAccessTokenAuthGuard)
-  // @Get()
-  // async getMyAccountBook(@CurrentUser() user): Promise<any> {
-  //   return this.accountbookService.
-  // }
+  @ApiOperation({ summary: '나의 가계부 불러오기' })
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @Get()
+  async getMyAccountBook(@CurrentUser() user): Promise<any> {
+    return this.accountbookService.getMyAccountBookList();
+  }
 
   /**
    *
@@ -48,13 +48,12 @@ export class AccountbookController {
     @CurrentUser() user: UserIdDto,
     @Body() data: AccountbookDto,
   ): Promise<any> {
-    await this.accountbookService.modifyMyAccountBook(
+    return await this.accountbookService.modifyMyAccountBook(
       user.id,
       data.name,
       data.determination,
       data.input_money,
     );
-    return '가계부가 수정되었습니다!';
   }
 
   @ApiOperation({
@@ -63,8 +62,7 @@ export class AccountbookController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @Patch()
   async softDeleteMyAccountBook(@CurrentUser() user: UserIdDto): Promise<any> {
-    await this.accountbookService.softDeleteMyAccountBook(user.id);
-    return '삭제되었습니다!';
+    return await this.accountbookService.softDeleteMyAccountBook(user.id);
   }
 
   @ApiOperation({ summary: '삭제된 가계부 복구' })

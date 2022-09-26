@@ -2,9 +2,10 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dataSource from 'ormconfig';
 import { AccountBook } from 'src/entities/AccountBook';
-import { TodayExpenses } from 'src/entities/TodayExpenses';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
 @Injectable()
 export class AccountbookService {
@@ -41,6 +42,7 @@ export class AccountbookService {
       throw new ForbiddenException('돈을 넣을 때는 양수만 입력 가능합니다.');
     }
     try {
+      dayjs.locale('ko');
       const currentMoney = myAccountBook.current_money;
       const addInputMoneyWithCurrentMoney = input_money + currentMoney;
       await queryRunner.manager.update(AccountBook, id, {
@@ -48,20 +50,22 @@ export class AccountbookService {
         determination,
         input_money,
         current_money: addInputMoneyWithCurrentMoney,
+        createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
-      /**
-       * foreinkey에 number,string등 타입이 들어가지않기 때문에 Column을 새로 생성해서 타입을 지정함
-       */
-      const todayExpenses = new TodayExpenses();
-      todayExpenses.account_book_id =
-        userInfoWithAccountbookId.accountbookId.id;
-      const todayExpensesId = await queryRunner.manager.save(todayExpenses);
       await queryRunner.commitTransaction();
       /**
        * todayExpenses.id를 리턴하는 이유는 today_expenses에서 create할때 today_expenses.id를 가져오기 위함이다.
        * 따라서 요청할때 리턴받은 todayExpensesId.id를 body로 담아보내야한다.
        */
-      return { message: '가계부가 생성되었습니다!', data: todayExpensesId.id };
+      return {
+        message: '가계부가 생성되었습니다!',
+        data: {
+          id: myAccountBook.id,
+          createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+          message:
+            'id는 account_book foreignkey입니다. 이것을 이용하여 today_expenses를 생성할때 foreignkey를 정의합니다',
+        },
+      };
     } catch (err) {
       console.log(err);
       queryRunner.rollbackTransaction();
@@ -91,15 +95,22 @@ export class AccountbookService {
       })
       .getOne();
     try {
+      dayjs.locale('ko');
+      const inputMoney = myAccountBook.input_money + input_money;
       const currentMoney = myAccountBook.current_money;
       const addInputMoneyWithCurrentMoney = input_money + currentMoney;
       await queryRunner.manager.update(AccountBook, id, {
         name,
         determination,
-        input_money,
+        input_money: inputMoney,
         current_money: addInputMoneyWithCurrentMoney,
+        updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
+      return {
+        message: '수정되었습니다!',
+        updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+      };
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();
@@ -124,11 +135,16 @@ export class AccountbookService {
       })
       .getOne();
     try {
+      dayjs.locale('ko');
       await queryRunner.manager.update(AccountBook, myAccountBook.id, {
         is_deleted: true,
+        deletedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
-      return;
+      return {
+        message: '삭제되었습니다!',
+        deletedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+      };
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();
@@ -172,4 +188,6 @@ export class AccountbookService {
       await queryRunner.release();
     }
   }
+
+  async getMyAccountBookList(): Promise<any> {}
 }

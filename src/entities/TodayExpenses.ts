@@ -1,16 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString, ValidateIf } from 'class-validator';
-import dayjs from 'dayjs';
-import { from } from 'rxjs';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { AccountBook } from './AccountBook';
 
@@ -50,30 +45,23 @@ export class TodayExpenses {
   })
   account_book_id: number | null;
 
-  // @Column({ type: 'varchar', name: 'created_at', nullable: true })
-  // createdAt: string | null;
-
   @ValidateIf((object, value) => value !== null)
   @IsString()
-  @CreateDateColumn({
+  @Column({
+    type: 'varchar',
     name: 'created_at',
     nullable: true,
-    transformer: {
-      to(value) {
-        return value;
-      },
-      from(value) {
-        return value;
-      },
-    },
+    default: null,
   })
-  createdAt: string;
+  createdAt: string | null;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at' })
-  deletedAt: Date;
+  @Column({
+    type: 'varchar',
+    name: 'updated_at',
+    nullable: true,
+    default: null,
+  })
+  updatedAt: string | null;
 
   @ManyToOne(() => AccountBook, (accountBook) => accountBook.TodayExpenses, {
     onDelete: 'SET NULL',

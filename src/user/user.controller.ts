@@ -18,7 +18,6 @@ export class UsersController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @Get()
   async getUser(@CurrentUser() user: Request) {
-    console.log(user);
     return user;
   }
 
@@ -29,12 +28,11 @@ export class UsersController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @Patch('edit')
   async modifyUserInfo(@CurrentUser() user, @Body() body: ModifyUserDto) {
-    await this.usersService.modifyUserInfo(
+    return await this.usersService.modifyUserInfo(
       user.id,
       body.email,
       body.nickname,
       body.password,
     );
-    return '수정되었습니다!';
   }
 }
