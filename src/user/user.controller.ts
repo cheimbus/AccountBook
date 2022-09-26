@@ -27,7 +27,7 @@ export class UsersController {
       '유저 정보 수정. 수정을 할때는 처음 유저 정보를 가져갔을 때 유저가 현재 email, nickname, password정보를 가지고 있는 상태에서 수정할 수 있게 해야함',
   })
   @UseGuards(JwtAccessTokenAuthGuard)
-  @Patch()
+  @Patch('edit')
   async modifyUserInfo(@CurrentUser() user, @Body() body: ModifyUserDto) {
     await this.usersService.modifyUserInfo(
       user.id,

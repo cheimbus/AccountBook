@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, ValidateIf } from 'class-validator';
+import dayjs from 'dayjs';
+import { from } from 'rxjs';
 import {
   Column,
   CreateDateColumn,
@@ -21,26 +23,51 @@ export class TodayExpenses {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @IsNotEmpty()
+  @ValidateIf((object, value) => value !== null)
   @IsNumber()
   @ApiProperty({
     example: 20000,
     description: '지출 금액',
   })
-  @Column({ type: 'int', name: 'expenses' })
-  expenses: number;
+  @Column({ type: 'int', name: 'expenses', nullable: true })
+  expenses: number | null;
 
-  @IsNotEmpty()
+  @ValidateIf((object, value) => value !== null)
   @IsString()
   @ApiProperty({
     example: '스타벅스 아메리카노',
     description: '지출한 내역 메모',
   })
-  @Column({ type: 'varchar', name: 'memo' })
-  memo: string;
+  @Column({ type: 'varchar', name: 'memo', nullable: true })
+  memo: string | null;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  @ValidateIf((object, value) => value !== null)
+  @IsNumber()
+  @Column({
+    type: 'int',
+    name: 'account_book_id',
+    nullable: true,
+  })
+  account_book_id: number | null;
+
+  // @Column({ type: 'varchar', name: 'created_at', nullable: true })
+  // createdAt: string | null;
+
+  @ValidateIf((object, value) => value !== null)
+  @IsString()
+  @CreateDateColumn({
+    name: 'created_at',
+    nullable: true,
+    transformer: {
+      to(value) {
+        return value;
+      },
+      from(value) {
+        return value;
+      },
+    },
+  })
+  createdAt: string;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
@@ -53,5 +80,5 @@ export class TodayExpenses {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'account_book_id', referencedColumnName: 'id' }])
-  accountBook: AccountBook;
+  accountBookId: AccountBook;
 }
