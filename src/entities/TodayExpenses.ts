@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsNumber, IsString, ValidateIf } from 'class-validator';
 import {
   Column,
@@ -60,6 +61,7 @@ export class TodayExpenses {
     name: 'updated_at',
     nullable: true,
     default: null,
+    select: false,
   })
   updatedAt: string | null;
 

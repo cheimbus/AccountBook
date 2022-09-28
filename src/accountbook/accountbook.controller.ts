@@ -1,21 +1,40 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAccessTokenAuthGuard } from 'src/auth/jwt/jwt.access.token.auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.request.decorator';
+import { AccountBookIdDto } from 'src/todayexpenses/dto/todayexpenses.param.dto';
 import { UserIdDto } from 'src/user/dto/user.accountbookid.dto';
 import { AccountbookService } from './accountbook.service';
 import { AccountbookDto } from './dto/accountbook.dto';
+import { AccountBookQueryDto } from './dto/accountbook.query.dto';
 
 @Controller('accountbook')
 export class AccountbookController {
   constructor(private accountbookService: AccountbookService) {}
 
-  // pagenation 적용해서 마지막으로 작성
   @ApiOperation({ summary: '나의 가계부 불러오기' })
   @UseGuards(JwtAccessTokenAuthGuard)
   @Get()
-  async getMyAccountBook(@CurrentUser() user): Promise<any> {
-    return this.accountbookService.getMyAccountBookList();
+  async getMyAccountBook(
+    @Query() query: AccountBookQueryDto,
+    @CurrentUser() user: UserIdDto,
+    @Body() accountBookId: AccountBookIdDto,
+  ): Promise<any> {
+    return this.accountbookService.getMyAccountBookList(
+      query.page,
+      query.take,
+      query.order,
+      accountBookId.accountBookId,
+      user.id,
+    );
   }
 
   /**
