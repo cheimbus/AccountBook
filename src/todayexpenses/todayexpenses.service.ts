@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dataSource from 'ormconfig';
 import { AuthService } from 'src/auth/auth.service';
@@ -137,10 +133,7 @@ export class TodayexpensesService {
       })
       .andWhere('todayExpenses.id=:id', { id })
       .getOne();
-    if (accountBookIdWithTodayExpenses === null) {
-      throw new ForbiddenException('권한이 없습니다.');
-    }
-    if (userId !== accountBookId) {
+    if (accountBookIdWithTodayExpenses === null || userId !== accountBookId) {
       throw new ForbiddenException('권한이 없습니다.');
     }
     try {

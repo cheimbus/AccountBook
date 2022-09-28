@@ -6,6 +6,7 @@ import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
+import { TodayExpenses } from 'src/entities/TodayExpenses';
 
 @Injectable()
 export class AccountbookService {
@@ -189,5 +190,57 @@ export class AccountbookService {
     }
   }
 
-  async getMyAccountBookList(): Promise<any> {}
+  async getMyAccountBookList(
+    currentPage,
+    take,
+    order,
+    accountBookId: number,
+    userId: number,
+  ): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    if (userId !== accountBookId) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+    const IntCurrrentPage = parseInt(currentPage);
+    const IntTake = parseInt(take);
+    const getTodayExpenses = await queryRunner.manager
+      .getRepository(TodayExpenses)
+      .createQueryBuilder('expenses')
+      .orderBy('id', order)
+      .skip((IntCurrrentPage - 1) * IntTake)
+      .take(IntTake)
+      .where('expenses.account_book_id=:accountBookId', { accountBookId })
+      .getManyAndCount();
+    const getCountItem = getTodayExpenses[1];
+    if (take > getCountItem) {
+      throw new ForbiddenException('접근할 수 없습니다.');
+    }
+    const pageCount = Math.ceil(getCountItem / IntTake);
+    const hasPreviousPage = IntCurrrentPage > 1;
+    const hasNextPage = IntCurrrentPage < pageCount;
+    if (currentPage > pageCount) {
+      throw new ForbiddenException('접근할 수 없습니다.');
+    }
+    try {
+      await queryRunner.commitTransaction();
+      return {
+        option: {
+          countItem: getCountItem,
+          take: IntTake,
+          currentPage: IntCurrrentPage,
+          pageCount,
+          hasPreviousPage,
+          hasNextPage,
+        },
+        data: getTodayExpenses[0],
+      };
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }
