@@ -26,7 +26,7 @@ export class AccountbookController {
   @ApiOperation({
     summary: '나의 가계부를 불러옵니다.',
     description:
-      'is_deleted가 false인 것만 가져옵니다. Body에서의 accountBookId는 현재 가계부에만 소속되어있는 지출내역을 뽑아내기위해 param에 UserId의 accountBookId값을 입력합니다.',
+      'is_deleted가 false인 것만 가져오며 param에는 accountBookId가 입력됩니다.',
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)

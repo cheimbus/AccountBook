@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import path from 'path/posix';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AccountBook } from './entities/AccountBook';
 import { RefreshToken } from './entities/RefreshToken';
 import { TodayExpenses } from './entities/TodayExpenses';
@@ -57,7 +55,7 @@ import { TodayexpensesModule } from './todayexpenses/todayexpenses.module';
     AccountbookModule,
     TodayexpensesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

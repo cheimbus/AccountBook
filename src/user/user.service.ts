@@ -101,9 +101,32 @@ export class UsersService {
     queryRunner.connect();
     queryRunner.startTransaction();
     try {
-      await queryRunner.manager.delete(Users, id);
-      await queryRunner.manager.delete(AccountBook, id);
+      await queryRunner.manager
+        .getRepository(TodayExpenses)
+        .createQueryBuilder()
+        .delete()
+        .where('account_book_id=:account_book_id', { account_book_id: id })
+        .execute();
+      await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(Users)
+        .where('id=:id', { id })
+        .execute();
+      await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(AccountBook)
+        .where('id=:id', { id })
+        .execute();
+      await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(RefreshToken)
+        .where('id=:id', { id })
+        .execute();
       await queryRunner.commitTransaction();
+      return;
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();

@@ -71,8 +71,8 @@ export class TodayexpensesController {
     @CurrentUser() user: UserIdDto,
   ): Promise<any> {
     return this.todayExpensesService.getOneExpensesInfo(
-      param.id,
       param.accountbookid,
+      param.id,
       user.id,
     );
   }
