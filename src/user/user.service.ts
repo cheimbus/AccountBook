@@ -6,6 +6,7 @@ import { RefreshToken } from 'src/entities/RefreshToken';
 import { AccountBook } from 'src/entities/AccountBook';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
+import { TodayExpenses } from 'src/entities/TodayExpenses';
 
 @Injectable()
 export class UsersService {
@@ -87,6 +88,22 @@ export class UsersService {
         message: '수정되었습니다!',
         updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       };
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async deleteUserInfo(id: number): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.delete(Users, id);
+      await queryRunner.manager.delete(AccountBook, id);
+      await queryRunner.commitTransaction();
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();

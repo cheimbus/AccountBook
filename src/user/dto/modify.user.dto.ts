@@ -1,8 +1,16 @@
-import { PickType } from '@nestjs/swagger';
-import { Users } from 'src/entities/Users';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class ModifyUserDto extends PickType(Users, [
-  'email',
-  'nickname',
-  'password',
-]) {}
+export class ModifyUserDto {
+  @ApiProperty({
+    example: 'siujjang@gmail.com',
+  })
+  email: string;
+  @ApiProperty({
+    example: '시우는가계부',
+  })
+  nickname: string;
+  @ApiProperty({
+    example: '123123good',
+  })
+  password: string;
+}

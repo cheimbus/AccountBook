@@ -2,37 +2,45 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAccessTokenAuthGuard } from 'src/auth/jwt/jwt.access.token.auth.guard';
 import { CurrentUser } from 'src/common/decorators/user.request.decorator';
-import { AccountBookIdDto } from 'src/todayexpenses/dto/todayexpenses.param.dto';
 import { UserIdDto } from 'src/user/dto/user.accountbookid.dto';
 import { AccountbookService } from './accountbook.service';
-import { AccountbookDto } from './dto/accountbook.dto';
+import { CreateAccountbookDto } from './dto/create.accountbook.dto';
 import { AccountBookQueryDto } from './dto/accountbook.query.dto';
+import { ModifyAccountbookDto } from './dto/modify.accountbook.dto';
+import { AccountBookParamDto } from './dto/accountbook.param.dto';
 
+@ApiTags('AccountBook')
 @Controller('accountbook')
 export class AccountbookController {
   constructor(private accountbookService: AccountbookService) {}
 
-  @ApiOperation({ summary: '나의 가계부 불러오기' })
+  @ApiOperation({
+    summary: '나의 가계부를 불러옵니다.',
+    description:
+      'is_deleted가 false인 것만 가져옵니다. Body에서의 accountBookId는 현재 가계부에만 소속되어있는 지출내역을 뽑아내기위해 param에 UserId의 accountBookId값을 입력합니다.',
+  })
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @Get()
+  @Get('/:accountbookid')
   async getMyAccountBook(
+    @Param() param: AccountBookParamDto,
     @Query() query: AccountBookQueryDto,
     @CurrentUser() user: UserIdDto,
-    @Body() accountBookId: AccountBookIdDto,
   ): Promise<any> {
     return this.accountbookService.getMyAccountBookList(
       query.page,
       query.take,
       query.order,
-      accountBookId.accountBookId,
+      param.accountbookid,
       user.id,
     );
   }
@@ -43,12 +51,17 @@ export class AccountbookController {
    * @param data 사용자가 입력한 값
    * @returns 중복오류나 잘못된 입력한 값 오류, 성공 시 생성멘트
    */
-  @ApiOperation({ summary: '나의 가계부 생성' })
+  @ApiOperation({
+    summary: '나의 가계부 생성',
+    description:
+      '가계부를 생성할 name, determination, input_money를 작성합니다.',
+  })
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)
   @Post()
   async createMyAccountBook(
     @CurrentUser() user: UserIdDto,
-    @Body() data: AccountbookDto,
+    @Body() data: CreateAccountbookDto,
   ): Promise<any> {
     return await this.accountbookService.createAccountBook(
       user.id,
@@ -59,13 +72,15 @@ export class AccountbookController {
   }
 
   @ApiOperation({
-    summary: '가계부 수정, current_money가 -인 경우는 적자가 난 경우라고 생각',
+    summary: '가계부를 수정합니다.',
+    description: '가계부를 수정합니다. 각각 수정할 수 있습니다.',
   })
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)
   @Patch('edit')
   async modifyMyAccountBook(
     @CurrentUser() user: UserIdDto,
-    @Body() data: AccountbookDto,
+    @Body() data: ModifyAccountbookDto,
   ): Promise<any> {
     return await this.accountbookService.modifyMyAccountBook(
       user.id,
@@ -76,15 +91,22 @@ export class AccountbookController {
   }
 
   @ApiOperation({
-    summary: '가계부 삭제. soft delete하여 is_deleted를 true로 바꿈',
+    summary: '가계부를 삭제합니다.',
+    description:
+      'soft delete를 사용하기 때문에 is_deleted를 true로 변경합니다.',
   })
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)
   @Patch()
   async softDeleteMyAccountBook(@CurrentUser() user: UserIdDto): Promise<any> {
     return await this.accountbookService.softDeleteMyAccountBook(user.id);
   }
 
-  @ApiOperation({ summary: '삭제된 가계부 복구' })
+  @ApiOperation({
+    summary: '삭제된 가계부를 복구합니다',
+    description: 'is_deleted를 false로 변경합니다.',
+  })
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)
   @Post('restore')
   async restoreMyAccountBook(@CurrentUser() user: UserIdDto): Promise<any> {

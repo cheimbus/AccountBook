@@ -118,22 +118,27 @@ export class TodayexpensesService {
   }
 
   async getOneExpensesInfo(
-    id: number,
-    accountBookId: number,
+    accountBookId: string,
+    id: string,
     userId: number,
   ): Promise<any> {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
+    const IntAccountBookId = parseInt(accountBookId);
+    const IntTodayExpenses = parseInt(id);
     const accountBookIdWithTodayExpenses = await queryRunner.manager
       .getRepository(TodayExpenses)
       .createQueryBuilder('todayExpenses')
       .where('todayExpenses.account_book_id=:accountBookId', {
-        accountBookId,
+        accountBookId: IntAccountBookId,
       })
-      .andWhere('todayExpenses.id=:id', { id })
+      .andWhere('todayExpenses.id=:id', { id: IntTodayExpenses })
       .getOne();
-    if (accountBookIdWithTodayExpenses === null || userId !== accountBookId) {
+    if (
+      accountBookIdWithTodayExpenses === null ||
+      userId !== IntAccountBookId
+    ) {
       throw new ForbiddenException('권한이 없습니다.');
     }
     try {

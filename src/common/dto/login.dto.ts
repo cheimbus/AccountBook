@@ -1,8 +1,17 @@
-import { PickType } from '@nestjs/swagger';
-import { Users } from 'src/entities/Users';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class LogInDto extends PickType(Users, [
-  'id',
-  'email',
-  'password',
-] as const) {}
+export class LogInDto {
+  @ApiProperty({
+    example: 'siu@naver.com',
+    required: true,
+  })
+  email: string;
+
+  @ApiProperty({
+    example: 'A$dawjdo123',
+    required: true,
+  })
+  password: string;
+}
+{
+}
