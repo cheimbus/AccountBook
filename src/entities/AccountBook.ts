@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBooleanString, IsNotEmpty, IsNumber } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TodayExpenses } from './TodayExpenses';
-
 @Entity()
 export class AccountBook {
   @ApiProperty({
@@ -13,7 +12,7 @@ export class AccountBook {
   id: number;
 
   @ApiProperty({
-    example: '시우의 가계부',
+    example: '절약짱 시우의 가계부',
     description: '가계부 이름',
     required: true,
   })
@@ -27,9 +26,8 @@ export class AccountBook {
   name: string;
 
   @ApiProperty({
-    example: '티끌모아 태산 아끼자!',
-    description: '각오',
-    required: true,
+    example: '티끌모아 태산',
+    description: '가계부에 대한 각오를 작성합니다',
   })
   @Column({
     type: 'varchar',
@@ -45,8 +43,7 @@ export class AccountBook {
   @ApiProperty({
     example: 30000,
     description:
-      '투입 금액. 사용자는 처음 자신의 자산을 가계부에 작성해야한다.',
-    required: true,
+      '전체 투입금액입니다. 가계부에서 사용금액의 대략적인 것을 정하는 과정입니다. 수정하여 투입금액을 높일 수 있습니다.',
   })
   @Column({ type: 'int', name: 'input_money', default: 0 })
   input_money: number;
@@ -54,8 +51,9 @@ export class AccountBook {
   @IsNotEmpty()
   @IsNumber()
   @ApiProperty({
-    example: 20000,
-    description: '현재 금액. 이것은 today_expenses와 합산해서 넣어지는 값이다.',
+    example: 30000,
+    description:
+      '현재 가계부에서 남은 금액입니다. 지출을 할때마다 업데이트됩니다.',
   })
   @Column({ type: 'int', name: 'current_money', default: 0 })
   current_money: number;
@@ -65,7 +63,7 @@ export class AccountBook {
   @ApiProperty({
     example: 'true',
     description:
-      'soft delete를 하기위해 설정. string형식으로 true, false를 작성하되, true는 삭제된 가계부이고 false는 삭제가 안된 가계부이다. 가계부를 불러올 때 false인 가계부를 불러와야함',
+      'soft delete를 하기위한 설정입니다. string형식으로 true, false를 작성하되, true는 삭제된 가계부이고 false는 삭제가 안된 가계부입니다. 가계부를 불러올 때 false인 가계부를 불러와야힙니다.',
   })
   @Column({ type: 'boolean', name: 'is_deleted', default: false })
   is_deleted: boolean;

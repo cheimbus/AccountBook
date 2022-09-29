@@ -1,5 +1,5 @@
 import { Controller, Post, Body, UseGuards, Res } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LogInDto } from 'src/common/dto/login.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { CurrentUser } from 'src/common/decorators/user.request.decorator';
@@ -8,13 +8,17 @@ import { jwtRefreshTokenAuthGuard } from 'src/auth/jwt/jwt.refresh.token.auth.gu
 import { UsersService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto/create.user.dto';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly usersService: UsersService,
     private authService: AuthService,
   ) {}
-  @ApiOperation({ summary: '회원가입' })
+  @ApiOperation({
+    summary: '회원가입',
+    description: 'email, nickname, password는 반드시 작성해야 합니다.',
+  })
   @Post('signup')
   async create(@Body() userdata: CreateUserDto) {
     return await this.usersService.createUser(
@@ -23,7 +27,10 @@ export class AuthController {
       userdata.password,
     );
   }
-  @ApiOperation({ summary: '로그인' })
+  @ApiOperation({
+    summary: '로그인',
+    description: 'email, password를 가지고 로그인을 합니다.',
+  })
   @Post('login')
   async login(
     @Res({ passthrough: true }) res: Response,
@@ -40,7 +47,12 @@ export class AuthController {
     return { accessToken, refreshToken };
   }
 
-  @ApiOperation({ summary: '리프레시 토큰을 이용해 엑세스토큰 가져옴' })
+  @ApiOperation({
+    summary: 'AccessToken을 새로 발급합니다.',
+    description:
+      '로그인할 때 발급된 RefreshToken을 이용해 AccessToken을 새로 발급받습니다.',
+  })
+  @ApiBearerAuth('access-token')
   @UseGuards(jwtRefreshTokenAuthGuard)
   @Post('refresh')
   async getAccessToken(
@@ -53,7 +65,11 @@ export class AuthController {
     return { accessToken, user };
   }
 
-  @ApiOperation({ summary: '로그아웃' })
+  @ApiOperation({
+    summary: '로그아웃',
+    description: '유저를 로그아웃하여 기존에 있던 쿠키정보를 삭제합니다.',
+  })
+  @ApiBearerAuth('access-token')
   @UseGuards(jwtRefreshTokenAuthGuard)
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response, @CurrentUser() user) {

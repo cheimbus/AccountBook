@@ -1,8 +1,8 @@
 import { PickType } from '@nestjs/swagger';
 import { AccountBook } from 'src/entities/AccountBook';
 
-export class AccountbookDto extends PickType(AccountBook, [
-  'input_money',
+export class CreateAccountbookDto extends PickType(AccountBook, [
   'name',
   'determination',
-] as const) {}
+  'input_money',
+]) {}

@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dataSource from 'ormconfig';
 import { AccountBook } from 'src/entities/AccountBook';
@@ -12,8 +16,8 @@ import { TodayExpenses } from 'src/entities/TodayExpenses';
 export class AccountbookService {
   constructor(
     @InjectRepository(AccountBook)
-    private accountbookRepository: Repository<AccountBook>,
-    @InjectRepository(Users) private userRepository: Repository<Users>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
   ) {}
 
   async createAccountBook(
@@ -25,10 +29,13 @@ export class AccountbookService {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
-    const userInfoWithAccountbookId = await this.userRepository.findOne({
-      where: { id },
-      relations: { accountbookId: true },
-    });
+    console.log(id, typeof id);
+    const userInfoWithAccountbookId = await queryRunner.manager
+      .getRepository(Users)
+      .findOne({
+        where: { id },
+        relations: { accountbookId: true },
+      });
     const myAccountBook = await queryRunner.manager
       .getRepository(AccountBook)
       .createQueryBuilder('accountbook')
@@ -194,14 +201,24 @@ export class AccountbookService {
     currentPage,
     take,
     order,
-    accountBookId: number,
+    accountBookId,
     userId: number,
   ): Promise<any> {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
-    if (userId !== accountBookId) {
+    const IntAccountBook = parseInt(accountBookId);
+    if (userId !== IntAccountBook) {
       throw new ForbiddenException('권한이 없습니다.');
+    }
+    const isAccountBook = await queryRunner.manager
+      .getRepository(AccountBook)
+      .createQueryBuilder('accountbook')
+      .where('accountbook.id=:id', { id: userId })
+      .andWhere('accountbook.is_deleted=:is_deleted', { is_deleted: false })
+      .getOne();
+    if (!isAccountBook) {
+      throw new BadRequestException('접근할 수 없습니다.');
     }
     const IntCurrrentPage = parseInt(currentPage);
     const IntTake = parseInt(take);
@@ -214,9 +231,6 @@ export class AccountbookService {
       .where('expenses.account_book_id=:accountBookId', { accountBookId })
       .getManyAndCount();
     const getCountItem = getTodayExpenses[1];
-    if (take > getCountItem) {
-      throw new ForbiddenException('접근할 수 없습니다.');
-    }
     const pageCount = Math.ceil(getCountItem / IntTake);
     const hasPreviousPage = IntCurrrentPage > 1;
     const hasNextPage = IntCurrrentPage < pageCount;

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class TodayExpensesModifyDto {
+export class ModifyTodayExpensesDto {
   @ApiProperty({
     example: 1,
     description: 'today_expenses.id',
@@ -9,19 +9,19 @@ export class TodayExpensesModifyDto {
 
   @ApiProperty({
     example: 1,
-    description: 'account_book_id foreignkey를 받아와서 접근함',
+    description: 'account_book_id foreignkey를 받아와서 접근합니다.',
   })
   accountBookId: number;
 
   @ApiProperty({
-    example: 5000,
-    description: '지출 비용',
+    example: 4000,
+    description: '지출 비용입니다.',
   })
   expenses: number;
 
   @ApiProperty({
-    example: '스타벅스 아이스아메리카노',
-    description: '지출 비용에 대한 메모',
+    example: '아이스크림',
+    description: '지출 비용에 대한 메모입니다.',
   })
   memo: string;
 }

@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 import { IsNumber, IsString, ValidateIf } from 'class-validator';
 import {
   Column,
@@ -14,7 +13,7 @@ import { AccountBook } from './AccountBook';
 export class TodayExpenses {
   @ApiProperty({
     example: 1,
-    description: 'TodayExpenses 아이디',
+    description: 'TodayExpenses 아이디입니다.',
   })
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
@@ -22,8 +21,8 @@ export class TodayExpenses {
   @ValidateIf((object, value) => value !== null)
   @IsNumber()
   @ApiProperty({
-    example: 20000,
-    description: '지출 금액',
+    example: 5000,
+    description: '지출 금액입니다.',
   })
   @Column({ type: 'int', name: 'expenses', nullable: true })
   expenses: number | null;
@@ -32,7 +31,7 @@ export class TodayExpenses {
   @IsString()
   @ApiProperty({
     example: '스타벅스 아메리카노',
-    description: '지출한 내역 메모',
+    description: '지출한 내역 메모합니다.',
   })
   @Column({ type: 'varchar', name: 'memo', nullable: true })
   memo: string | null;

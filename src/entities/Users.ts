@@ -33,7 +33,7 @@ export class Users {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    example: '가계부잘세워요',
+    example: '가계부하면시우',
     description: '닉네임',
     required: true,
   })
