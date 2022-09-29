@@ -24,7 +24,7 @@ export class AccountbookController {
   constructor(private accountbookService: AccountbookService) {}
 
   @ApiOperation({
-    summary: '나의 가계부를 불러옵니다.',
+    summary: 'today-expenses로 생성된 나의 가계부를 불러옵니다.',
     description:
       'is_deleted가 false인 것만 가져오며 param에는 accountBookId가 입력됩니다.',
   })

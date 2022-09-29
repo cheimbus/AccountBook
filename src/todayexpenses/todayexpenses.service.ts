@@ -47,10 +47,16 @@ export class TodayexpensesService {
       await queryRunner.manager.update(AccountBook, accountBookId, {
         current_money: currentMoney,
       });
+      const getAccountBookInfo = await queryRunner.manager
+        .getRepository(AccountBook)
+        .createQueryBuilder()
+        .where('id=:id', { id: accountBookId })
+        .getOne();
       dayjs.locale('ko');
       const todayExpenses = new TodayExpenses();
       todayExpenses.expenses = expenses;
       todayExpenses.memo = memo;
+      todayExpenses.currnet_money = getAccountBookInfo.current_money;
       todayExpenses.createdAt = dayjs().format('YYYY.MM.DD dddd A HH:mm');
       todayExpenses.account_book_id = accountBookId;
       const createTodayExpenses = await queryRunner.manager
@@ -60,8 +66,12 @@ export class TodayexpensesService {
       return {
         id: createTodayExpenses.id,
         message:
-          '생성되었습니다! id값은 today_expenses의 id이므로 수정할 때 사용됩니다.',
-        createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+          '생성되었습니다! id값은 today_expenses의 id이므로 해당 expenses를 조회하거나 수정할 때 사용됩니다.',
+        TodayExpenses: {
+          expenses,
+          createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
+        },
+        CurrentMoney: getAccountBookInfo.current_money,
       };
     } catch (err) {
       console.log(err);
@@ -141,11 +151,19 @@ export class TodayexpensesService {
     ) {
       throw new ForbiddenException('권한이 없습니다.');
     }
+    const getAccountBookInfo = await queryRunner.manager
+      .getRepository(AccountBook)
+      .createQueryBuilder()
+      .where('id=:id', { id: userId })
+      .getOne();
     try {
       const { account_book_id, ...withoutAccountBookId } =
         accountBookIdWithTodayExpenses;
       await queryRunner.commitTransaction();
-      return withoutAccountBookId;
+      return {
+        TodayExpenses: withoutAccountBookId,
+        CurrentMoney: getAccountBookInfo.current_money,
+      };
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();

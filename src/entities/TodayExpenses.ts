@@ -37,6 +37,15 @@ export class TodayExpenses {
   memo: string | null;
 
   @ValidateIf((object, value) => value !== null)
+  @IsString()
+  @ApiProperty({
+    example: '스타벅스 아메리카노',
+    description: '지출한 내역 메모합니다.',
+  })
+  @Column({ type: 'int', name: 'current_money', nullable: true })
+  currnet_money: number | null;
+
+  @ValidateIf((object, value) => value !== null)
   @IsNumber()
   @Column({
     type: 'int',
