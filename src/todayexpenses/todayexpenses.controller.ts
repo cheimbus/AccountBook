@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -67,12 +68,32 @@ export class TodayexpensesController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @Get(':accountbookid/:id')
   async getOneExpensesInfo(
-    @Param(PositivePipe) param: TodayExpensesParamDto,
+    @Param('accountbookid', PositivePipe) accountbookid: number,
+    @Param('id', PositivePipe) id: number,
     @CurrentUser() user: UserIdDto,
   ): Promise<any> {
     return this.todayExpensesService.getOneExpensesInfo(
-      param.accountbookid,
-      param.id,
+      accountbookid,
+      id,
+      user.id,
+    );
+  }
+
+  @ApiOperation({
+    summary: '지출내용 삭제하기',
+    description: '원하는 지출내용을 삭제합니다.',
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @Delete(':accountbookid/:id')
+  async deleteOneExpenses(
+    @Param('accountbookid', PositivePipe) accountbookid: number,
+    @Param('id', PositivePipe) id: number,
+    @CurrentUser() user: UserIdDto,
+  ): Promise<any> {
+    return this.todayExpensesService.deleteAccountBook(
+      accountbookid,
+      id,
       user.id,
     );
   }

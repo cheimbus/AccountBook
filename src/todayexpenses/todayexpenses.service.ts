@@ -32,7 +32,7 @@ export class TodayexpensesService {
       /**
        * accountBookId가 JoinColumn으로 설정되어있기 때문에 타입목적으로 생성한 Column으로 account_book_id에 접근하면 에러가 남
        * today_expenses의 account_book_id에 설정되어있는 곳으로 이동하기 위해서는
-       * const accountBookIdWithTodayExpenses =
+       * const todayExpensesWithAccountBookId =
         await this.todayExpensesRepository.findOne({
           where: { id },
           relations: { accountBookId: true },
@@ -128,27 +128,22 @@ export class TodayexpensesService {
   }
 
   async getOneExpensesInfo(
-    accountBookId: string,
-    id: string,
+    accountBookId: number,
+    id: number,
     userId: number,
   ): Promise<any> {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
-    const IntAccountBookId = parseInt(accountBookId);
-    const IntTodayExpenses = parseInt(id);
-    const accountBookIdWithTodayExpenses = await queryRunner.manager
+    const todayExpensesWithAccountBookId = await queryRunner.manager
       .getRepository(TodayExpenses)
       .createQueryBuilder('todayExpenses')
       .where('todayExpenses.account_book_id=:accountBookId', {
-        accountBookId: IntAccountBookId,
+        accountBookId,
       })
-      .andWhere('todayExpenses.id=:id', { id: IntTodayExpenses })
+      .andWhere('todayExpenses.id=:id', { id })
       .getOne();
-    if (
-      accountBookIdWithTodayExpenses === null ||
-      userId !== IntAccountBookId
-    ) {
+    if (todayExpensesWithAccountBookId === null || userId !== accountBookId) {
       throw new ForbiddenException('권한이 없습니다.');
     }
     const getAccountBookInfo = await queryRunner.manager
@@ -158,12 +153,89 @@ export class TodayexpensesService {
       .getOne();
     try {
       const { account_book_id, ...withoutAccountBookId } =
-        accountBookIdWithTodayExpenses;
+        todayExpensesWithAccountBookId;
       await queryRunner.commitTransaction();
       return {
         TodayExpenses: withoutAccountBookId,
         CurrentMoney: getAccountBookInfo.current_money,
       };
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async deleteAccountBook(
+    accountBookId: number,
+    id: number,
+    userId: number,
+  ): Promise<any> {
+    const queryRunner = dataSource.createQueryRunner();
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    const todayExpensesWithAccountBookId = await queryRunner.manager
+      .getRepository(TodayExpenses)
+      .createQueryBuilder()
+      .where('account_book_id=:accountBookId', { accountBookId })
+      .getOne();
+    if (todayExpensesWithAccountBookId === null || accountBookId !== userId) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+    try {
+      const getAllTodayExpenses = await queryRunner.manager
+        .getRepository(TodayExpenses)
+        .createQueryBuilder()
+        .where('account_book_id=:account_book_id', {
+          account_book_id: accountBookId,
+        })
+        .getManyAndCount();
+      const arrayWithTodayExpensesId = [];
+      for (let i = 0; i < getAllTodayExpenses[1]; i++) {
+        arrayWithTodayExpensesId.push(getAllTodayExpenses[0][i].id);
+      }
+      const todayExpensesEqualId = await queryRunner.manager
+        .getRepository(TodayExpenses)
+        .createQueryBuilder()
+        .where('id=:id', { id })
+        .getOne();
+      const currentExpenses = todayExpensesEqualId.expenses;
+      for (let i = 0; i < arrayWithTodayExpensesId.length; i++) {
+        const getId = arrayWithTodayExpensesId[i];
+        const todayExpensesInfo = await queryRunner.manager
+          .getRepository(TodayExpenses)
+          .createQueryBuilder()
+          .where('id=:id', { id: getId })
+          .getOne();
+        const currentMoneyAddExpenses =
+          todayExpensesInfo.currnet_money + currentExpenses;
+        await queryRunner.manager.update(TodayExpenses, getId, {
+          currnet_money: currentMoneyAddExpenses,
+        });
+      }
+      const expensesInfo = await queryRunner.manager
+        .getRepository(TodayExpenses)
+        .createQueryBuilder()
+        .where('id=:id', { id })
+        .getOne();
+      await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from(TodayExpenses)
+        .where('id=:id', { id })
+        .execute();
+      const getAccountBookInfo = await queryRunner.manager
+        .getRepository(AccountBook)
+        .createQueryBuilder()
+        .where('id=:id', { id: accountBookId })
+        .getOne();
+      const currentMoneyAddExpenses =
+        getAccountBookInfo.current_money + expensesInfo.expenses;
+      await queryRunner.manager.update(AccountBook, accountBookId, {
+        current_money: currentMoneyAddExpenses,
+      });
+      await queryRunner.commitTransaction();
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();
