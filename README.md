@@ -78,7 +78,8 @@ JWT_REFRESH_EXPIRESIN=720m
 ```
 
 ## 5. 데이터베이스 다이어그램
-<img width="1035" alt="스크린샷 2022-10-05 오후 8 18 11" src="https://user-images.githubusercontent.com/87293880/194048504-0da65e58-0e85-4719-a8a8-4309ecec1fba.png">
+<img width="1035" alt="스크린샷 2022-10-05 오후 11 12 46" src="https://user-images.githubusercontent.com/87293880/194082236-c509b71e-8ebd-4baf-a5a1-2ae66fc624bd.png">
+
 
 ## 6. API 사용법
 > 아래 주소로 이동해 swagger를 사용합니다.
