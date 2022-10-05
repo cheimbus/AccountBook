@@ -25,8 +25,12 @@ nvm install node
 sudo apt install npm
 ```
 > Node & npm update
-- `sudo npm install -g n`
-- `sudo n 16.17.0`
+```
+sudo npm install -g n
+```
+```
+sudo n 16.17.0
+```
 
 ## 3. 설치 및 실행 방법
 > 아래를 차례로 실행시킵니다.
@@ -112,6 +116,9 @@ password : 123123
 - 특정 지출내역을 불러옵니다.   
 - 특정 지출내역을 삭제합니다.
   - hard delete.  
-
+## 7. 저작권
+- Copyright 2022 [Siu Hwang.](https://github.com/nicesiu) All rights reserved.
+- 사본을 얻는 모든 사람에게 무료로 허가합니다.
+- 대신 위의 저작권 표시 및 허가 표시는 모든 문서에 포함되어야 합니다.
 
 
