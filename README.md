@@ -28,7 +28,6 @@ sudo apt install npm
 - `sudo n 16.17.0`
 
 ## 3. 설치 및 실행 방법
-> 순서대로 진행합니다.
 - 해당 프로젝트를 clone합니다.
 ```
 git clone https://github.com/nicesiu/AccountBook
@@ -49,4 +48,43 @@ npm run start:prod
 ```
 npm run typeorm schema:sync
 ```
+### 4. .env 생성
+> 다음과 같이 작성합니다.
+```
+TEST=false
+// DB
+HOST=localhost
+DB_PORT= "writing here"
+USER_NAME=root
+PASSWORD= "writing here"
+DATABASE= "writing here"
+
+// swagger
+SWAGGER_PATH=api
+SWAGGER_USER=siu
+SWAGGER_PASSWORD=123123
+
+// port
+PORT=3000
+
+// JWT
+JWT_ACCESS_SECRET=djddjdh123
+JWT_ACCESS_EXPIRESIN=60m
+JWT_REFRESH_SECRET=siuAAA!@fd
+JWT_REFRESH_EXPIRESIN=720m
+```
+
+### 5. 데이터베이스 다이어그램
+<img width="1035" alt="스크린샷 2022-10-05 오후 8 18 11" src="https://user-images.githubusercontent.com/87293880/194048504-0da65e58-0e85-4719-a8a8-4309ecec1fba.png">
+
+### 6. API 사용법
+> 아래 주소로 이동해 swagger를 사용합니다.
+```
+http://localhost:3000/api
+```
+
+
+
+
+
 
