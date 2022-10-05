@@ -37,6 +37,10 @@ git clone https://github.com/nicesiu/AccountBook
 ```
 npm install
 ```
+- 직접 작성한 모델과 데이터베이스를 동기화시기키 위해 아래 명령어를 실행합니다.
+```
+npm run typeorm schema:sync
+```
 - 서버를 실행합니다.
 ```
 npm run start
@@ -45,10 +49,7 @@ npm run start
 ```
 npm run start:prod
 ```
-- 직접 작성한 모델과 데이터베이스를 동기화시기키 위해 아래 명령어를 실행합니다.
-```
-npm run typeorm schema:sync
-```
+
 ## 4. .env 생성
 > 다음과 같이 작성합니다.
 ```
