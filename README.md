@@ -48,16 +48,16 @@ npm run start:prod
 ```
 npm run typeorm schema:sync
 ```
-### 4. .env 생성
+## 4. .env 생성
 > 다음과 같이 작성합니다.
 ```
 TEST=false
 // DB
 HOST=localhost
-DB_PORT= "writing here"
+DB_PORT= "write here"
 USER_NAME=root
-PASSWORD= "writing here"
-DATABASE= "writing here"
+PASSWORD= "write here"
+DATABASE= "write here"
 
 // swagger
 SWAGGER_PATH=api
@@ -74,17 +74,40 @@ JWT_REFRESH_SECRET=siuAAA!@fd
 JWT_REFRESH_EXPIRESIN=720m
 ```
 
-### 5. 데이터베이스 다이어그램
+## 5. 데이터베이스 다이어그램
 <img width="1035" alt="스크린샷 2022-10-05 오후 8 18 11" src="https://user-images.githubusercontent.com/87293880/194048504-0da65e58-0e85-4719-a8a8-4309ecec1fba.png">
 
-### 6. API 사용법
+## 6. API 사용법
 > 아래 주소로 이동해 swagger를 사용합니다.
 ```
 http://localhost:3000/api
+password : 123123
 ```
-
-
-
+> 사용법은 다음과 같습니다.
+- 사용자는 회원가입을 해야합니다.   
+- 사용자는 회원가입 한 아이디를 가지고 로그인을 합니다.
+  - accessToken과 RefreshToken이 생성되어 쿠키로 전송됩니다.   
+- 발급한 accessToken을 가지고 Authorization합니다.
+  - 제한시간 1시간
+- 제한시간이 만료가 되었다면 RefreshToken로 새로 발급합니다.   
+  - 제한시간 하루
+- 사용자의 정보를 가져옵니다.   
+- 사용자의 정보를 수정할 수 있습니다.   
+- 사용자는 로그아웃 할 수 있습니다.   
+- 사용자는 회원탈퇴를 할 수 있습니다.   
+- AccountBook을 생성합니다.
+  - 한 계정당 한개만 생성가능합니다.   
+- AccountBook을 수정합니다.   
+- AccountBook을 삭제합니다.
+  - soft delete를 하여 언제든지 복구 가능합니다.   
+- AccountBook을 불러옵니다.
+  - 이때까지 지출한 지출 내역들을 불러옵니다.
+  - 페이징을 하여 원하는 수 만큼 불러올 수 있습니다.   
+- 지출내역을 생성합니다.   
+- 지출내역을 수정합니다.   
+- 특정 지출내역을 불러옵니다.   
+- 특정 지출내역을 삭제합니다.
+  - hard delete.  
 
 
 
