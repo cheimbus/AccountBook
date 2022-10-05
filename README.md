@@ -28,6 +28,7 @@ sudo apt install npm
 - `sudo n 16.17.0`
 
 ## 3. 설치 및 실행 방법
+> 아래를 차례로 실행시킵니다.
 - 해당 프로젝트를 clone합니다.
 ```
 git clone https://github.com/nicesiu/AccountBook
