@@ -82,7 +82,8 @@ JWT_REFRESH_EXPIRESIN=720m
 ```
 
 ## 5. 데이터베이스 다이어그램
-<img width="1035" alt="스크린샷 2022-10-05 오후 11 12 46" src="https://user-images.githubusercontent.com/87293880/194082236-c509b71e-8ebd-4baf-a5a1-2ae66fc624bd.png">
+<img width="1035" alt="스크린샷 2022-10-06 오후 7 12 30" src="https://user-images.githubusercontent.com/87293880/194287389-b3b37685-3b28-400a-bf9e-e1956f33172b.png">
+
 
 
 ## 6. API 사용법
