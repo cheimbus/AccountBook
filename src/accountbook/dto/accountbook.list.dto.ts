@@ -3,9 +3,9 @@ import { AccountBook } from 'src/entities/AccountBook';
 
 export class AccountbookListDto extends PickType(AccountBook, [
   'id',
-  'input_money',
+  'inputMoney',
   'name',
   'determination',
-  'current_money',
+  'currentMoney',
   'createdAt',
 ] as const) {}

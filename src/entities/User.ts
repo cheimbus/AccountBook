@@ -10,8 +10,8 @@ import {
 import { AccountBook } from './AccountBook';
 import { RefreshToken } from './RefreshToken';
 
-@Entity()
-export class Users {
+@Entity('users')
+export class User {
   @ApiProperty({
     example: 1,
     description: '사용자 아이디',
@@ -52,7 +52,7 @@ export class Users {
 
   @Column({
     type: 'varchar',
-    name: 'created_at',
+    name: 'createdAt',
     nullable: true,
     default: null,
   })
@@ -60,17 +60,17 @@ export class Users {
 
   @Column({
     type: 'varchar',
-    name: 'updated_at',
+    name: 'updatedAt',
     nullable: true,
     default: null,
   })
   updatedAt: string | null;
 
   @OneToOne(() => AccountBook)
-  @JoinColumn([{ name: 'account_book_id', referencedColumnName: 'id' }])
-  accountbookId: AccountBook;
+  @JoinColumn([{ name: 'accountBookId', referencedColumnName: 'id' }])
+  accountBookId: AccountBook;
 
   @OneToOne(() => RefreshToken)
-  @JoinColumn([{ name: 'refresh_token_id', referencedColumnName: 'id' }])
-  refreshtokenId: RefreshToken;
+  @JoinColumn([{ name: 'refreshTokenId', referencedColumnName: 'id' }])
+  refreshTokenId: RefreshToken;
 }

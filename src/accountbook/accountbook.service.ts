@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import dataSource from 'ormconfig';
 import { AccountBook } from 'src/entities/AccountBook';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 import { Repository } from 'typeorm';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
@@ -16,8 +16,8 @@ import { TodayExpenses } from 'src/entities/TodayExpenses';
 export class AccountbookService {
   constructor(
     @InjectRepository(AccountBook)
-    @InjectRepository(Users)
-    private userRepository: Repository<Users>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async createAccountBook(
@@ -31,16 +31,16 @@ export class AccountbookService {
     queryRunner.startTransaction();
     console.log(id, typeof id);
     const userInfoWithAccountbookId = await queryRunner.manager
-      .getRepository(Users)
+      .getRepository(User)
       .findOne({
         where: { id },
-        relations: { accountbookId: true },
+        relations: { accountBookId: true },
       });
     const myAccountBook = await queryRunner.manager
       .getRepository(AccountBook)
       .createQueryBuilder('accountbook')
       .where('accountbook.id=:id', {
-        id: userInfoWithAccountbookId.accountbookId.id,
+        id: userInfoWithAccountbookId.accountBookId.id,
       })
       .getOne();
     if (myAccountBook.name !== null) {
@@ -51,13 +51,13 @@ export class AccountbookService {
     }
     try {
       dayjs.locale('ko');
-      const currentMoney = myAccountBook.current_money;
+      const currentMoney = myAccountBook.currentMoney;
       const addInputMoneyWithCurrentMoney = input_money + currentMoney;
       await queryRunner.manager.update(AccountBook, id, {
         name,
         determination,
-        input_money,
-        current_money: addInputMoneyWithCurrentMoney,
+        inputMoney: input_money,
+        currentMoney: addInputMoneyWithCurrentMoney,
         createdAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
@@ -91,27 +91,23 @@ export class AccountbookService {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
-    const userInfoWithAccountbookId = await this.userRepository.findOne({
-      where: { id },
-      relations: { accountbookId: true },
-    });
     const myAccountBook = await queryRunner.manager
       .getRepository(AccountBook)
-      .createQueryBuilder('accountbook')
-      .where('accountbook.id=:id', {
-        id: userInfoWithAccountbookId.accountbookId.id,
+      .createQueryBuilder()
+      .where('id=:id', {
+        id,
       })
       .getOne();
     try {
       dayjs.locale('ko');
-      const inputMoney = myAccountBook.input_money + input_money;
-      const currentMoney = myAccountBook.current_money;
+      const inputMoney = myAccountBook.inputMoney + input_money;
+      const currentMoney = myAccountBook.currentMoney;
       const addInputMoneyWithCurrentMoney = input_money + currentMoney;
       await queryRunner.manager.update(AccountBook, id, {
         name,
         determination,
-        input_money: inputMoney,
-        current_money: addInputMoneyWithCurrentMoney,
+        inputMoney: inputMoney,
+        currentMoney: addInputMoneyWithCurrentMoney,
         updatedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
@@ -131,21 +127,17 @@ export class AccountbookService {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
-    const userInfoWithAccountbookId = await this.userRepository.findOne({
-      where: { id },
-      relations: { accountbookId: true },
-    });
     const myAccountBook = await queryRunner.manager
       .getRepository(AccountBook)
       .createQueryBuilder('accountbook')
       .where('accountbook.id=:id', {
-        id: userInfoWithAccountbookId.accountbookId.id,
+        id,
       })
       .getOne();
     try {
       dayjs.locale('ko');
       await queryRunner.manager.update(AccountBook, myAccountBook.id, {
-        is_deleted: true,
+        isDeleted: true,
         deletedAt: dayjs().format('YYYY.MM.DD dddd A HH:mm'),
       });
       await queryRunner.commitTransaction();
@@ -165,26 +157,22 @@ export class AccountbookService {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
-    const userInfoWithAccountbookId = await this.userRepository.findOne({
-      where: { id },
-      relations: { accountbookId: true },
-    });
     const myAccountBook = await queryRunner.manager
       .getRepository(AccountBook)
       .createQueryBuilder('accountbook')
       .where('accountbook.id=:id', {
-        id: userInfoWithAccountbookId.accountbookId.id,
+        id,
       })
       .getOne();
     try {
       await queryRunner.manager.update(AccountBook, myAccountBook.id, {
-        is_deleted: false,
+        isDeleted: false,
       });
       const updated = await queryRunner.manager
         .getRepository(AccountBook)
         .createQueryBuilder('accountbook')
         .where('accountbook.id=:id', {
-          id: userInfoWithAccountbookId.accountbookId.id,
+          id,
         })
         .getOne();
       await queryRunner.commitTransaction();
@@ -207,6 +195,7 @@ export class AccountbookService {
     const queryRunner = dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
+
     const IntAccountBook = parseInt(accountBookId);
     if (userId !== IntAccountBook) {
       throw new ForbiddenException('권한이 없습니다.');
@@ -215,7 +204,7 @@ export class AccountbookService {
       .getRepository(AccountBook)
       .createQueryBuilder('accountbook')
       .where('accountbook.id=:id', { id: userId })
-      .andWhere('accountbook.is_deleted=:is_deleted', { is_deleted: false })
+      .andWhere('accountbook.isDeleted=:isDeleted', { isDeleted: false })
       .getOne();
     if (!isAccountBook) {
       throw new BadRequestException('접근할 수 없습니다.');
@@ -228,7 +217,7 @@ export class AccountbookService {
       .orderBy('id', order)
       .skip((IntCurrrentPage - 1) * IntTake)
       .take(IntTake)
-      .where('expenses.account_book_id=:accountBookId', { accountBookId })
+      .where('expenses.accountBookId=:accountBookId', { accountBookId })
       .getManyAndCount();
     const getCountItem = getTodayExpenses[1];
     const pageCount = Math.ceil(getCountItem / IntTake);

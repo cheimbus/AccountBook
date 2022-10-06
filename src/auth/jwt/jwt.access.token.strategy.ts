@@ -6,7 +6,7 @@ import { BadRequestException, Injectable, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 import { jwtTokenPayload } from './jwt.token.payload';
 import { Request } from 'express';
 @Injectable()
@@ -15,7 +15,7 @@ export class JwtAccessTokenStrategy extends PassportStrategy(
   'JwtAccessTokenAuthGuard',
 ) {
   constructor(
-    @InjectRepository(Users) private userRepository: Repository<Users>,
+    @InjectRepository(User) private userRepository: Repository<User>,
     configService: ConfigService,
   ) {
     super({

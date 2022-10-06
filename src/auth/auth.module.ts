@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountBook } from 'src/entities/AccountBook';
 import { RefreshToken } from 'src/entities/RefreshToken';
 import { TodayExpenses } from 'src/entities/TodayExpenses';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 import { UsersModule } from 'src/user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -17,7 +17,7 @@ import { JwtRefreshTokenStrategy } from './jwt/jwt.refresh.token.strategy';
   imports: [
     forwardRef(() => UsersModule),
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forFeature([Users, RefreshToken, AccountBook, TodayExpenses]),
+    TypeOrmModule.forFeature([User, RefreshToken, AccountBook, TodayExpenses]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

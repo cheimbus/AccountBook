@@ -54,7 +54,7 @@ export class AccountbookController {
   @ApiOperation({
     summary: '나의 가계부 생성',
     description:
-      '가계부를 생성할 name, determination, input_money를 작성합니다.',
+      '가계부를 생성할 name, determination, inputMoney를 작성합니다.',
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)
@@ -67,13 +67,13 @@ export class AccountbookController {
       user.id,
       data.name,
       data.determination,
-      data.input_money,
+      data.inputMoney,
     );
   }
 
   @ApiOperation({
     summary: '가계부를 수정합니다.',
-    description: '가계부를 수정합니다. 각각 수정할 수 있습니다.',
+    description: '가계부를 수정합니다.',
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)
@@ -86,7 +86,7 @@ export class AccountbookController {
       user.id,
       data.name,
       data.determination,
-      data.input_money,
+      data.inputMoney,
     );
   }
 
@@ -104,7 +104,7 @@ export class AccountbookController {
 
   @ApiOperation({
     summary: '삭제된 가계부를 복구합니다',
-    description: 'is_deleted를 false로 변경합니다.',
+    description: 'isDeleted를 false로 변경합니다.',
   })
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessTokenAuthGuard)

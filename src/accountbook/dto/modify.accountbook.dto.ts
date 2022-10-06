@@ -17,5 +17,5 @@ export class ModifyAccountbookDto {
     example: 100000,
     description: '가계부의 투입금액을 수정합니다. 현재 투입금액과 중첩됩니다.',
   })
-  input_money: number;
+  inputMoney: number;
 }

@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth.service';
 import { Request } from 'express';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 import { jwtTokenPayload } from './jwt.token.payload';
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(
@@ -14,7 +14,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   'jwtRefreshTokenAuthGuard',
 ) {
   constructor(
-    @InjectRepository(Users) private catsRepository: Repository<Users>,
+    @InjectRepository(User) private catsRepository: Repository<User>,
     // super안에서 configService를 호출하기 위해서는 private을 제거한 후 호출 할 수 있음
     configService: ConfigService,
     private authService: AuthService,

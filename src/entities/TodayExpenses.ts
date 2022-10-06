@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { AccountBook } from './AccountBook';
 
-@Entity()
+@Entity('today_expenses')
 export class TodayExpenses {
   @ApiProperty({
     example: 1,
@@ -42,23 +42,23 @@ export class TodayExpenses {
     example: '스타벅스 아메리카노',
     description: '지출한 내역 메모합니다.',
   })
-  @Column({ type: 'int', name: 'current_money', nullable: true })
-  currnet_money: number | null;
+  @Column({ type: 'int', name: 'currnetMoney', nullable: true })
+  currnetMoney: number | null;
 
   @ValidateIf((object, value) => value !== null)
   @IsNumber()
   @Column({
     type: 'int',
-    name: 'account_book_id',
+    name: 'accountBookId',
     nullable: true,
   })
-  account_book_id: number | null;
+  accountBookId: number | null;
 
   @ValidateIf((object, value) => value !== null)
   @IsString()
   @Column({
     type: 'varchar',
-    name: 'created_at',
+    name: 'createdAt',
     nullable: true,
     default: null,
   })
@@ -66,17 +66,17 @@ export class TodayExpenses {
 
   @Column({
     type: 'varchar',
-    name: 'updated_at',
+    name: 'updatedAt',
     nullable: true,
     default: null,
     select: false,
   })
   updatedAt: string | null;
 
-  @ManyToOne(() => AccountBook, (accountBook) => accountBook.TodayExpenses, {
+  @ManyToOne(() => AccountBook, (accountBook) => accountBook.todayExpenses, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'account_book_id', referencedColumnName: 'id' }])
-  accountBookId: AccountBook;
+  @JoinColumn([{ name: 'accountBookId', referencedColumnName: 'id' }])
+  AccountBookId: AccountBook;
 }

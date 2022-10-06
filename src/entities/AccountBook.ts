@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBooleanString, IsNotEmpty, IsNumber } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TodayExpenses } from './TodayExpenses';
-@Entity()
+@Entity('account_books')
 export class AccountBook {
   @ApiProperty({
     example: 1,
@@ -45,8 +45,8 @@ export class AccountBook {
     description:
       '전체 투입금액입니다. 가계부에서 사용금액의 대략적인 것을 정하는 과정입니다. 수정하여 투입금액을 높일 수 있습니다.',
   })
-  @Column({ type: 'int', name: 'input_money', default: 0 })
-  input_money: number;
+  @Column({ type: 'int', name: 'inputMoney', default: 0 })
+  inputMoney: number;
 
   @IsNotEmpty()
   @IsNumber()
@@ -55,8 +55,8 @@ export class AccountBook {
     description:
       '현재 가계부에서 남은 금액입니다. 지출을 할때마다 업데이트됩니다.',
   })
-  @Column({ type: 'int', name: 'current_money', default: 0 })
-  current_money: number;
+  @Column({ type: 'int', name: 'currentMoney', default: 0 })
+  currentMoney: number;
 
   @IsNotEmpty()
   @IsBooleanString()
@@ -65,12 +65,12 @@ export class AccountBook {
     description:
       'soft delete를 하기위한 설정입니다. string형식으로 true, false를 작성하되, true는 삭제된 가계부이고 false는 삭제가 안된 가계부입니다. 가계부를 불러올 때 false인 가계부를 불러와야힙니다.',
   })
-  @Column({ type: 'boolean', name: 'is_deleted', default: false })
-  is_deleted: boolean;
+  @Column({ type: 'boolean', name: 'isDeleted', default: false })
+  isDeleted: boolean;
 
   @Column({
     type: 'varchar',
-    name: 'created_at',
+    name: 'createdAt',
     default: null,
     nullable: true,
   })
@@ -78,7 +78,7 @@ export class AccountBook {
 
   @Column({
     type: 'varchar',
-    name: 'updated_at',
+    name: 'updatedAt',
     default: null,
     nullable: true,
   })
@@ -86,7 +86,7 @@ export class AccountBook {
 
   @Column({
     type: 'varchar',
-    name: 'deleted_at',
+    name: 'deletedAt',
     default: null,
     nullable: true,
   })
@@ -96,5 +96,5 @@ export class AccountBook {
     () => TodayExpenses,
     (todayExpenses) => todayExpenses.accountBookId,
   )
-  TodayExpenses: TodayExpenses;
+  todayExpenses: TodayExpenses;
 }

@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 
-export class CreateUserDto extends PickType(Users, [
+export class CreateUserDto extends PickType(User, [
   'email',
   'nickname',
   'password',

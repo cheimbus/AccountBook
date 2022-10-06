@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import dataSource from 'ormconfig';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 import bcrypt from 'bcrypt';
 import { RefreshToken } from 'src/entities/RefreshToken';
 import { AccountBook } from 'src/entities/AccountBook';
@@ -19,9 +19,9 @@ export class UsersService {
     queryRunner.connect();
     queryRunner.startTransaction();
     const isUser = await queryRunner.manager
-      .getRepository(Users)
+      .getRepository(User)
       .createQueryBuilder()
-      .where('Users.email=:email', { email })
+      .where('User.email=:email', { email })
       .getOne();
     /**
      * try 안에서 http메세지를 사용하면 httpexception이 제대로 안된다.
@@ -34,24 +34,22 @@ export class UsersService {
     try {
       dayjs.locale('ko');
       const refresh_token = new RefreshToken();
-      refresh_token.refresh_token = null;
+      refresh_token.refreshToken = null;
       refresh_token.createdAt = dayjs().format('YYYY.MM.DD dddd A HH:mm');
       await queryRunner.manager.save(refresh_token);
 
       const account_book = new AccountBook();
       await queryRunner.manager.save(account_book);
 
-      const user = new Users();
+      const user = new User();
       user.email = email;
       user.nickname = nickname;
       user.password = hashedPassword;
-      user.refreshtokenId = refresh_token;
-      user.accountbookId = account_book;
+      user.refreshTokenId = refresh_token;
+      user.accountBookId = account_book;
       user.createdAt = dayjs().format('YYYY.MM.DD dddd A HH:mm');
 
-      const saveUser = await queryRunner.manager
-        .getRepository(Users)
-        .save(user);
+      const saveUser = await queryRunner.manager.getRepository(User).save(user);
       const { password, ...withoutPassword } = saveUser;
       await queryRunner.commitTransaction();
       return {
@@ -76,8 +74,11 @@ export class UsersService {
     queryRunner.startTransaction();
     try {
       dayjs.locale('ko');
-      const hashedPassword = await bcrypt.hash(password, 12);
-      await queryRunner.manager.update(Users, id, {
+      let hashedPassword;
+      if (password) {
+        hashedPassword = await bcrypt.hash(password, 12);
+      }
+      await queryRunner.manager.update(User, id, {
         email,
         nickname,
         password: hashedPassword,
@@ -105,12 +106,12 @@ export class UsersService {
         .getRepository(TodayExpenses)
         .createQueryBuilder()
         .delete()
-        .where('account_book_id=:account_book_id', { account_book_id: id })
+        .where('accountBookId=:account_book_id', { account_book_id: id })
         .execute();
       await queryRunner.manager
         .createQueryBuilder()
         .delete()
-        .from(Users)
+        .from(User)
         .where('id=:id', { id })
         .execute();
       await queryRunner.manager
@@ -126,7 +127,7 @@ export class UsersService {
         .where('id=:id', { id })
         .execute();
       await queryRunner.commitTransaction();
-      return;
+      return { message: '삭제되었습니다!' };
     } catch (err) {
       console.log(err);
       await queryRunner.rollbackTransaction();

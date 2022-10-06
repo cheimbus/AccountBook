@@ -5,7 +5,7 @@ import path from 'path/posix';
 import { AccountBook } from './entities/AccountBook';
 import { RefreshToken } from './entities/RefreshToken';
 import { TodayExpenses } from './entities/TodayExpenses';
-import { Users } from './entities/Users';
+import { User } from './entities/User';
 import { UsersModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AccountbookModule } from './accountbook/accountbook.module';
@@ -14,7 +14,7 @@ import { TodayexpensesModule } from './todayexpenses/todayexpenses.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forFeature([Users, AccountBook, RefreshToken, TodayExpenses]),
+    TypeOrmModule.forFeature([User, AccountBook, RefreshToken, TodayExpenses]),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {

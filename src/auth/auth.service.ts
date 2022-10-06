@@ -2,14 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { RefreshToken } from 'src/entities/RefreshToken';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Users) private userRepository: Repository<Users>,
+    @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(RefreshToken)
     private refreshTokenRepository: Repository<RefreshToken>,
     private jwtService: JwtService,
@@ -91,7 +91,7 @@ export class AuthService {
     }
     const isMatched = await bcrypt.compare(
       refreshToken,
-      refreshTokenInfoEqualUserId.refresh_token,
+      refreshTokenInfoEqualUserId.refreshToken,
     );
     if (!isMatched) {
       throw new UnauthorizedException('잘못된 접근입니다.');
@@ -104,14 +104,14 @@ export class AuthService {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 12);
     await this.refreshTokenRepository.update(
       { id },
-      { refresh_token: hashedRefreshToken },
+      { refreshToken: hashedRefreshToken },
     );
   }
 
   async refreshTokenToNull(id: number) {
     return await this.refreshTokenRepository.update(
       { id },
-      { refresh_token: null },
+      { refreshToken: null },
     );
   }
 

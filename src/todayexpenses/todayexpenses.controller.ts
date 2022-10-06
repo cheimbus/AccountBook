@@ -15,7 +15,6 @@ import { PositivePipe } from 'src/common/pipe/positive.int.pipe';
 import { UserIdDto } from 'src/user/dto/user.accountbookid.dto';
 import { CreateTodayExpensesDto } from './dto/create.todayexpenses.dto';
 import { ModifyTodayExpensesDto } from './dto/modify.todayexpenses.modify.dto';
-import { TodayExpensesParamDto } from './dto/todayexpenses.param.dto';
 import { TodayexpensesService } from './todayexpenses.service';
 
 @ApiTags('TodayExpenses')
