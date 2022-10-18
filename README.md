@@ -118,7 +118,7 @@ password : 123123
 - 특정 지출내역을 삭제합니다.
   - hard delete.  
 ## 7. 저작권
-- Copyright 2022 [Siu Hwang.](https://github.com/nicesiu) All rights reserved.
+- Copyright 2022 [Siu Hwang.](https://github.com/cheimbus) All rights reserved.
 - 사본을 얻는 모든 사람에게 무료로 허가합니다.
 - 대신 위의 저작권 표시 및 허가 표시는 모든 문서에 포함되어야 합니다.
 
