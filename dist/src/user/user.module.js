@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const user_controller_1 = require("./user.controller");
 const typeorm_1 = require("@nestjs/typeorm");
-const Users_1 = require("../entities/Users");
+const User_1 = require("../entities/User");
 const AccountBook_1 = require("../entities/AccountBook");
 const RefreshToken_1 = require("../entities/RefreshToken");
 const TodayExpenses_1 = require("../entities/TodayExpenses");
@@ -21,7 +21,7 @@ let UsersModule = class UsersModule {
 UsersModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([Users_1.Users, AccountBook_1.AccountBook, RefreshToken_1.RefreshToken, TodayExpenses_1.TodayExpenses]),
+            typeorm_1.TypeOrmModule.forFeature([User_1.User, AccountBook_1.AccountBook, RefreshToken_1.RefreshToken, TodayExpenses_1.TodayExpenses]),
             (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [user_controller_1.UsersController],

@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Users } from 'src/entities/Users';
+import { User } from 'src/entities/User';
 import { Repository } from 'typeorm';
 import { RefreshToken } from 'src/entities/RefreshToken';
 export declare class AuthService {
@@ -8,7 +8,7 @@ export declare class AuthService {
     private refreshTokenRepository;
     private jwtService;
     private configService;
-    constructor(userRepository: Repository<Users>, refreshTokenRepository: Repository<RefreshToken>, jwtService: JwtService, configService: ConfigService);
+    constructor(userRepository: Repository<User>, refreshTokenRepository: Repository<RefreshToken>, jwtService: JwtService, configService: ConfigService);
     validateUser(email: string, password: string): Promise<any>;
     getUserId(email: string): Promise<number>;
     getJwtAccessToken(email: string): Promise<any>;

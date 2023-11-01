@@ -31,10 +31,10 @@ let AccountbookController = class AccountbookController {
         return this.accountbookService.getMyAccountBookList(query.page, query.take, query.order, param.accountbookid, user.id);
     }
     async createMyAccountBook(user, data) {
-        return await this.accountbookService.createAccountBook(user.id, data.name, data.determination, data.input_money);
+        return await this.accountbookService.createAccountBook(user.id, data.name, data.determination, data.inputMoney);
     }
     async modifyMyAccountBook(user, data) {
-        return await this.accountbookService.modifyMyAccountBook(user.id, data.name, data.determination, data.input_money);
+        return await this.accountbookService.modifyMyAccountBook(user.id, data.name, data.determination, data.inputMoney);
     }
     async softDeleteMyAccountBook(user) {
         return await this.accountbookService.softDeleteMyAccountBook(user.id);
@@ -63,7 +63,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({
         summary: '나의 가계부 생성',
-        description: '가계부를 생성할 name, determination, input_money를 작성합니다.',
+        description: '가계부를 생성할 name, determination, inputMoney를 작성합니다.',
     }),
     (0, swagger_1.ApiBearerAuth)('access-token'),
     (0, common_1.UseGuards)(jwt_access_token_auth_guard_1.JwtAccessTokenAuthGuard),
@@ -78,7 +78,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({
         summary: '가계부를 수정합니다.',
-        description: '가계부를 수정합니다. 각각 수정할 수 있습니다.',
+        description: '가계부를 수정합니다.',
     }),
     (0, swagger_1.ApiBearerAuth)('access-token'),
     (0, common_1.UseGuards)(jwt_access_token_auth_guard_1.JwtAccessTokenAuthGuard),
@@ -106,7 +106,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiOperation)({
         summary: '삭제된 가계부를 복구합니다',
-        description: 'is_deleted를 false로 변경합니다.',
+        description: 'isDeleted를 false로 변경합니다.',
     }),
     (0, swagger_1.ApiBearerAuth)('access-token'),
     (0, common_1.UseGuards)(jwt_access_token_auth_guard_1.JwtAccessTokenAuthGuard),

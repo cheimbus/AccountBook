@@ -19,7 +19,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const config_1 = require("@nestjs/config");
-const Users_1 = require("../../entities/Users");
+const User_1 = require("../../entities/User");
 const jwt_token_payload_1 = require("./jwt.token.payload");
 let JwtAccessTokenStrategy = class JwtAccessTokenStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'JwtAccessTokenAuthGuard') {
     constructor(userRepository, configService) {
@@ -49,7 +49,7 @@ __decorate([
 ], JwtAccessTokenStrategy.prototype, "validate", null);
 JwtAccessTokenStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(Users_1.Users)),
+    __param(0, (0, typeorm_1.InjectRepository)(User_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         config_1.ConfigService])
 ], JwtAccessTokenStrategy);

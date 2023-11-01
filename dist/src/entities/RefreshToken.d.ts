@@ -1,5 +1,5 @@
 export declare class RefreshToken {
     id: number;
-    refresh_token: string | null;
+    refreshToken: string | null;
     createdAt: string | null;
 }

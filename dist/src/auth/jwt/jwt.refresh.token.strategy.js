@@ -20,7 +20,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const config_1 = require("@nestjs/config");
 const auth_service_1 = require("../auth.service");
-const Users_1 = require("../../entities/Users");
+const User_1 = require("../../entities/User");
 const jwt_token_payload_1 = require("./jwt.token.payload");
 let JwtRefreshTokenStrategy = class JwtRefreshTokenStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'jwtRefreshTokenAuthGuard') {
     constructor(catsRepository, configService, authService) {
@@ -47,7 +47,7 @@ __decorate([
 ], JwtRefreshTokenStrategy.prototype, "validate", null);
 JwtRefreshTokenStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(Users_1.Users)),
+    __param(0, (0, typeorm_1.InjectRepository)(User_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         config_1.ConfigService,
         auth_service_1.AuthService])

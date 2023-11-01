@@ -6,7 +6,7 @@ const AccountBook_1 = require("../../entities/AccountBook");
 class CreateAccountbookDto extends (0, swagger_1.PickType)(AccountBook_1.AccountBook, [
     'name',
     'determination',
-    'input_money',
+    'inputMoney',
 ]) {
 }
 exports.CreateAccountbookDto = CreateAccountbookDto;

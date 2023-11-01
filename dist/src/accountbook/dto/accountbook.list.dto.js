@@ -5,10 +5,10 @@ const swagger_1 = require("@nestjs/swagger");
 const AccountBook_1 = require("../../entities/AccountBook");
 class AccountbookListDto extends (0, swagger_1.PickType)(AccountBook_1.AccountBook, [
     'id',
-    'input_money',
+    'inputMoney',
     'name',
     'determination',
-    'current_money',
+    'currentMoney',
     'createdAt',
 ]) {
 }

@@ -15,7 +15,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const AccountBook_1 = require("../entities/AccountBook");
 const RefreshToken_1 = require("../entities/RefreshToken");
 const TodayExpenses_1 = require("../entities/TodayExpenses");
-const Users_1 = require("../entities/Users");
+const User_1 = require("../entities/User");
 const user_module_1 = require("../user/user.module");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
@@ -28,7 +28,7 @@ AuthModule = __decorate([
         imports: [
             (0, common_1.forwardRef)(() => user_module_1.UsersModule),
             config_1.ConfigModule.forRoot({ isGlobal: true }),
-            typeorm_1.TypeOrmModule.forFeature([Users_1.Users, RefreshToken_1.RefreshToken, AccountBook_1.AccountBook, TodayExpenses_1.TodayExpenses]),
+            typeorm_1.TypeOrmModule.forFeature([User_1.User, RefreshToken_1.RefreshToken, AccountBook_1.AccountBook, TodayExpenses_1.TodayExpenses]),
             passport_1.PassportModule.register({ defaultStrategy: 'jwt', session: false }),
             jwt_1.JwtModule.registerAsync({
                 imports: [config_1.ConfigModule],

@@ -32,23 +32,23 @@ __decorate([
     }),
     (0, typeorm_1.Column)({
         type: 'varchar',
-        name: 'refresh_token',
+        name: 'refreshToken',
         nullable: true,
         default: null,
     }),
     __metadata("design:type", String)
-], RefreshToken.prototype, "refresh_token", void 0);
+], RefreshToken.prototype, "refreshToken", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'varchar',
-        name: 'created_at',
+        name: 'createdAt',
         nullable: true,
         default: null,
     }),
     __metadata("design:type", String)
 ], RefreshToken.prototype, "createdAt", void 0);
 RefreshToken = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)('refresh_tokens')
 ], RefreshToken);
 exports.RefreshToken = RefreshToken;
 //# sourceMappingURL=RefreshToken.js.map

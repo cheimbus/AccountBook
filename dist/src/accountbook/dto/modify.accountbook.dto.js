@@ -33,6 +33,6 @@ __decorate([
         description: '가계부의 투입금액을 수정합니다. 현재 투입금액과 중첩됩니다.',
     }),
     __metadata("design:type", Number)
-], ModifyAccountbookDto.prototype, "input_money", void 0);
+], ModifyAccountbookDto.prototype, "inputMoney", void 0);
 exports.ModifyAccountbookDto = ModifyAccountbookDto;
 //# sourceMappingURL=modify.accountbook.dto.js.map

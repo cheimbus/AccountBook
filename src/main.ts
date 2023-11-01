@@ -68,7 +68,7 @@ async function bootstrap() {
       : configService.get('PORT');
   console.log(`listening on port : ${port}`);
 
-  await app.listen(port);
+  await app.listen(3000);
 
   if (module.hot) {
     module.hot.accept();

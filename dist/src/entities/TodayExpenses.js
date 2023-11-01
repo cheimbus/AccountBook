@@ -51,25 +51,25 @@ __decorate([
         example: '스타벅스 아메리카노',
         description: '지출한 내역 메모합니다.',
     }),
-    (0, typeorm_1.Column)({ type: 'int', name: 'current_money', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'int', name: 'currnetMoney', nullable: true }),
     __metadata("design:type", Number)
-], TodayExpenses.prototype, "currnet_money", void 0);
+], TodayExpenses.prototype, "currnetMoney", void 0);
 __decorate([
     (0, class_validator_1.ValidateIf)((object, value) => value !== null),
     (0, class_validator_1.IsNumber)(),
     (0, typeorm_1.Column)({
         type: 'int',
-        name: 'account_book_id',
+        name: 'accountBookId',
         nullable: true,
     }),
     __metadata("design:type", Number)
-], TodayExpenses.prototype, "account_book_id", void 0);
+], TodayExpenses.prototype, "accountBookId", void 0);
 __decorate([
     (0, class_validator_1.ValidateIf)((object, value) => value !== null),
     (0, class_validator_1.IsString)(),
     (0, typeorm_1.Column)({
         type: 'varchar',
-        name: 'created_at',
+        name: 'createdAt',
         nullable: true,
         default: null,
     }),
@@ -78,7 +78,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({
         type: 'varchar',
-        name: 'updated_at',
+        name: 'updatedAt',
         nullable: true,
         default: null,
         select: false,
@@ -86,15 +86,15 @@ __decorate([
     __metadata("design:type", String)
 ], TodayExpenses.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => AccountBook_1.AccountBook, (accountBook) => accountBook.TodayExpenses, {
+    (0, typeorm_1.ManyToOne)(() => AccountBook_1.AccountBook, (accountBook) => accountBook.todayExpenses, {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
     }),
-    (0, typeorm_1.JoinColumn)([{ name: 'account_book_id', referencedColumnName: 'id' }]),
+    (0, typeorm_1.JoinColumn)([{ name: 'accountBookId', referencedColumnName: 'id' }]),
     __metadata("design:type", AccountBook_1.AccountBook)
-], TodayExpenses.prototype, "accountBookId", void 0);
+], TodayExpenses.prototype, "AccountBookId", void 0);
 TodayExpenses = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)('today_expenses')
 ], TodayExpenses);
 exports.TodayExpenses = TodayExpenses;
 //# sourceMappingURL=TodayExpenses.js.map

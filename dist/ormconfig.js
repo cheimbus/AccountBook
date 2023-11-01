@@ -7,7 +7,7 @@ const typeorm_1 = require("typeorm");
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 const AccountBook_1 = require("./src/entities/AccountBook");
-const Users_1 = require("./src/entities/Users");
+const User_1 = require("./src/entities/User");
 const RefreshToken_1 = require("./src/entities/RefreshToken");
 const TodayExpenses_1 = require("./src/entities/TodayExpenses");
 dotenv_1.default.config();
@@ -26,7 +26,7 @@ const dataSource = new typeorm_1.DataSource({
     database: process.env.TEST === 'true'
         ? process.env.TEST_DATABASE
         : process.env.DATABASE,
-    entities: [AccountBook_1.AccountBook, Users_1.Users, RefreshToken_1.RefreshToken, TodayExpenses_1.TodayExpenses],
+    entities: [AccountBook_1.AccountBook, User_1.User, RefreshToken_1.RefreshToken, TodayExpenses_1.TodayExpenses],
     migrations: [path_1.default.join(__dirname, '/src/migrations/*.ts')],
     charset: 'utf8mb4',
     migrationsRun: true,

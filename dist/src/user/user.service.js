@@ -23,7 +23,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const ormconfig_1 = __importDefault(require("../../ormconfig"));
-const Users_1 = require("../entities/Users");
+const User_1 = require("../entities/User");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const RefreshToken_1 = require("../entities/RefreshToken");
 const AccountBook_1 = require("../entities/AccountBook");
@@ -36,9 +36,9 @@ let UsersService = class UsersService {
         queryRunner.connect();
         queryRunner.startTransaction();
         const isUser = await queryRunner.manager
-            .getRepository(Users_1.Users)
+            .getRepository(User_1.User)
             .createQueryBuilder()
-            .where('Users.email=:email', { email })
+            .where('User.email=:email', { email })
             .getOne();
         if (isUser) {
             throw new common_1.UnauthorizedException('가입되어 있는 사용자입니다.');
@@ -47,21 +47,19 @@ let UsersService = class UsersService {
         try {
             dayjs_1.default.locale('ko');
             const refresh_token = new RefreshToken_1.RefreshToken();
-            refresh_token.refresh_token = null;
+            refresh_token.refreshToken = null;
             refresh_token.createdAt = (0, dayjs_1.default)().format('YYYY.MM.DD dddd A HH:mm');
             await queryRunner.manager.save(refresh_token);
             const account_book = new AccountBook_1.AccountBook();
             await queryRunner.manager.save(account_book);
-            const user = new Users_1.Users();
+            const user = new User_1.User();
             user.email = email;
             user.nickname = nickname;
             user.password = hashedPassword;
-            user.refreshtokenId = refresh_token;
-            user.accountbookId = account_book;
+            user.refreshTokenId = refresh_token;
+            user.accountBookId = account_book;
             user.createdAt = (0, dayjs_1.default)().format('YYYY.MM.DD dddd A HH:mm');
-            const saveUser = await queryRunner.manager
-                .getRepository(Users_1.Users)
-                .save(user);
+            const saveUser = await queryRunner.manager.getRepository(User_1.User).save(user);
             const { password } = saveUser, withoutPassword = __rest(saveUser, ["password"]);
             await queryRunner.commitTransaction();
             return {
@@ -82,8 +80,11 @@ let UsersService = class UsersService {
         queryRunner.startTransaction();
         try {
             dayjs_1.default.locale('ko');
-            const hashedPassword = await bcrypt_1.default.hash(password, 12);
-            await queryRunner.manager.update(Users_1.Users, id, {
+            let hashedPassword;
+            if (password) {
+                hashedPassword = await bcrypt_1.default.hash(password, 12);
+            }
+            await queryRunner.manager.update(User_1.User, id, {
                 email,
                 nickname,
                 password: hashedPassword,
@@ -112,12 +113,12 @@ let UsersService = class UsersService {
                 .getRepository(TodayExpenses_1.TodayExpenses)
                 .createQueryBuilder()
                 .delete()
-                .where('account_book_id=:account_book_id', { account_book_id: id })
+                .where('accountBookId=:account_book_id', { account_book_id: id })
                 .execute();
             await queryRunner.manager
                 .createQueryBuilder()
                 .delete()
-                .from(Users_1.Users)
+                .from(User_1.User)
                 .where('id=:id', { id })
                 .execute();
             await queryRunner.manager
@@ -133,7 +134,7 @@ let UsersService = class UsersService {
                 .where('id=:id', { id })
                 .execute();
             await queryRunner.commitTransaction();
-            return;
+            return { message: '삭제되었습니다!' };
         }
         catch (err) {
             console.log(err);

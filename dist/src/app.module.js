@@ -17,7 +17,7 @@ const posix_1 = __importDefault(require("path/posix"));
 const AccountBook_1 = require("./entities/AccountBook");
 const RefreshToken_1 = require("./entities/RefreshToken");
 const TodayExpenses_1 = require("./entities/TodayExpenses");
-const Users_1 = require("./entities/Users");
+const User_1 = require("./entities/User");
 const user_module_1 = require("./user/user.module");
 const auth_module_1 = require("./auth/auth.module");
 const accountbook_module_1 = require("./accountbook/accountbook.module");
@@ -28,7 +28,7 @@ AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
-            typeorm_1.TypeOrmModule.forFeature([Users_1.Users, AccountBook_1.AccountBook, RefreshToken_1.RefreshToken, TodayExpenses_1.TodayExpenses]),
+            typeorm_1.TypeOrmModule.forFeature([User_1.User, AccountBook_1.AccountBook, RefreshToken_1.RefreshToken, TodayExpenses_1.TodayExpenses]),
             typeorm_1.TypeOrmModule.forRootAsync({
                 inject: [config_1.ConfigService],
                 useFactory: async (configService) => {

@@ -53,10 +53,10 @@ let TodayexpensesService = class TodayexpensesService {
             const accountBook = await this.accountBookRepository.findOne({
                 where: { id: accountBookId },
             });
-            const accountBookCurrentMoney = accountBook.current_money;
+            const accountBookCurrentMoney = accountBook.currentMoney;
             const currentMoney = accountBookCurrentMoney - expenses;
             await queryRunner.manager.update(AccountBook_1.AccountBook, accountBookId, {
-                current_money: currentMoney,
+                currentMoney: currentMoney,
             });
             const getAccountBookInfo = await queryRunner.manager
                 .getRepository(AccountBook_1.AccountBook)
@@ -67,9 +67,9 @@ let TodayexpensesService = class TodayexpensesService {
             const todayExpenses = new TodayExpenses_1.TodayExpenses();
             todayExpenses.expenses = expenses;
             todayExpenses.memo = memo;
-            todayExpenses.currnet_money = getAccountBookInfo.current_money;
+            todayExpenses.currnetMoney = getAccountBookInfo.currentMoney;
             todayExpenses.createdAt = (0, dayjs_1.default)().format('YYYY.MM.DD dddd A HH:mm');
-            todayExpenses.account_book_id = accountBookId;
+            todayExpenses.accountBookId = accountBookId;
             const createTodayExpenses = await queryRunner.manager
                 .getRepository(TodayExpenses_1.TodayExpenses)
                 .save(todayExpenses);
@@ -81,7 +81,7 @@ let TodayexpensesService = class TodayexpensesService {
                     expenses,
                     createdAt: (0, dayjs_1.default)().format('YYYY.MM.DD dddd A HH:mm'),
                 },
-                CurrentMoney: getAccountBookInfo.current_money,
+                CurrentMoney: getAccountBookInfo.currentMoney,
             };
         }
         catch (err) {
@@ -108,10 +108,10 @@ let TodayexpensesService = class TodayexpensesService {
                 .createQueryBuilder('todayExpenses')
                 .where('todayExpenses.id=:id', { id })
                 .getOne();
-            const accountBookCurrentMoney = accountBook.current_money;
+            const accountBookCurrentMoney = accountBook.currentMoney;
             const currentMoney = accountBookCurrentMoney - expenses + getTodayExpenses.expenses;
             await queryRunner.manager.update(AccountBook_1.AccountBook, accountBookId, {
-                current_money: currentMoney,
+                currentMoney: currentMoney,
             });
             dayjs_1.default.locale('ko');
             await queryRunner.manager.update(TodayExpenses_1.TodayExpenses, getTodayExpenses.id, {
@@ -140,7 +140,7 @@ let TodayexpensesService = class TodayexpensesService {
         const todayExpensesWithAccountBookId = await queryRunner.manager
             .getRepository(TodayExpenses_1.TodayExpenses)
             .createQueryBuilder('todayExpenses')
-            .where('todayExpenses.account_book_id=:accountBookId', {
+            .where('todayExpenses.accountBookId=:accountBookId', {
             accountBookId,
         })
             .andWhere('todayExpenses.id=:id', { id })
@@ -154,11 +154,11 @@ let TodayexpensesService = class TodayexpensesService {
             .where('id=:id', { id: userId })
             .getOne();
         try {
-            const { account_book_id } = todayExpensesWithAccountBookId, withoutAccountBookId = __rest(todayExpensesWithAccountBookId, ["account_book_id"]);
+            const { accountBookId } = todayExpensesWithAccountBookId, withoutAccountBookId = __rest(todayExpensesWithAccountBookId, ["accountBookId"]);
             await queryRunner.commitTransaction();
             return {
                 TodayExpenses: withoutAccountBookId,
-                CurrentMoney: getAccountBookInfo.current_money,
+                CurrentMoney: getAccountBookInfo.currentMoney,
             };
         }
         catch (err) {
@@ -176,17 +176,26 @@ let TodayexpensesService = class TodayexpensesService {
         const todayExpensesWithAccountBookId = await queryRunner.manager
             .getRepository(TodayExpenses_1.TodayExpenses)
             .createQueryBuilder()
-            .where('account_book_id=:accountBookId', { accountBookId })
-            .getOne();
+            .where('accountBookId=:accountBookId', { accountBookId })
+            .getMany();
         if (todayExpensesWithAccountBookId === null || accountBookId !== userId) {
             throw new common_1.ForbiddenException('권한이 없습니다.');
+        }
+        const isDeleted = await queryRunner.manager
+            .getRepository(TodayExpenses_1.TodayExpenses)
+            .createQueryBuilder()
+            .where('accountBookId=:accountBookId', { accountBookId })
+            .andWhere('id=:id', { id })
+            .getOne();
+        if (!isDeleted) {
+            throw new common_1.ForbiddenException('이미 삭제되었습니다');
         }
         try {
             const getAllTodayExpenses = await queryRunner.manager
                 .getRepository(TodayExpenses_1.TodayExpenses)
                 .createQueryBuilder()
-                .where('account_book_id=:account_book_id', {
-                account_book_id: accountBookId,
+                .where('accountBookId=:accountBookId', {
+                accountBookId: accountBookId,
             })
                 .getManyAndCount();
             const arrayWithTodayExpensesId = [];
@@ -206,9 +215,9 @@ let TodayexpensesService = class TodayexpensesService {
                     .createQueryBuilder()
                     .where('id=:id', { id: getId })
                     .getOne();
-                const currentMoneyAddExpenses = todayExpensesInfo.currnet_money + currentExpenses;
+                const currentMoneyAddExpenses = todayExpensesInfo.currnetMoney + currentExpenses;
                 await queryRunner.manager.update(TodayExpenses_1.TodayExpenses, getId, {
-                    currnet_money: currentMoneyAddExpenses,
+                    currnetMoney: currentMoneyAddExpenses,
                 });
             }
             const expensesInfo = await queryRunner.manager
@@ -227,11 +236,12 @@ let TodayexpensesService = class TodayexpensesService {
                 .createQueryBuilder()
                 .where('id=:id', { id: accountBookId })
                 .getOne();
-            const currentMoneyAddExpenses = getAccountBookInfo.current_money + expensesInfo.expenses;
+            const currentMoneyAddExpenses = getAccountBookInfo.currentMoney + expensesInfo.expenses;
             await queryRunner.manager.update(AccountBook_1.AccountBook, accountBookId, {
-                current_money: currentMoneyAddExpenses,
+                currentMoney: currentMoneyAddExpenses,
             });
             await queryRunner.commitTransaction();
+            return { message: '삭제되었습니다!' };
         }
         catch (err) {
             console.log(err);

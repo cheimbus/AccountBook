@@ -31,7 +31,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 const typeorm_1 = require("@nestjs/typeorm");
-const Users_1 = require("../entities/Users");
+const User_1 = require("../entities/User");
 const typeorm_2 = require("typeorm");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const RefreshToken_1 = require("../entities/RefreshToken");
@@ -108,7 +108,7 @@ let AuthService = class AuthService {
         if (!refreshTokenInfoEqualUserId) {
             throw new common_1.UnauthorizedException('잘못된 접근입니다.');
         }
-        const isMatched = await bcrypt_1.default.compare(refreshToken, refreshTokenInfoEqualUserId.refresh_token);
+        const isMatched = await bcrypt_1.default.compare(refreshToken, refreshTokenInfoEqualUserId.refreshToken);
         if (!isMatched) {
             throw new common_1.UnauthorizedException('잘못된 접근입니다.');
         }
@@ -117,10 +117,10 @@ let AuthService = class AuthService {
     }
     async setRefreshToken(refreshToken, id) {
         const hashedRefreshToken = await bcrypt_1.default.hash(refreshToken, 12);
-        await this.refreshTokenRepository.update({ id }, { refresh_token: hashedRefreshToken });
+        await this.refreshTokenRepository.update({ id }, { refreshToken: hashedRefreshToken });
     }
     async refreshTokenToNull(id) {
-        return await this.refreshTokenRepository.update({ id }, { refresh_token: null });
+        return await this.refreshTokenRepository.update({ id }, { refreshToken: null });
     }
     async getCookieOptionsForLogOut() {
         return {
@@ -141,7 +141,7 @@ let AuthService = class AuthService {
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(Users_1.Users)),
+    __param(0, (0, typeorm_1.InjectRepository)(User_1.User)),
     __param(1, (0, typeorm_1.InjectRepository)(RefreshToken_1.RefreshToken)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,

@@ -60,9 +60,9 @@ __decorate([
         example: 30000,
         description: '전체 투입금액입니다. 가계부에서 사용금액의 대략적인 것을 정하는 과정입니다. 수정하여 투입금액을 높일 수 있습니다.',
     }),
-    (0, typeorm_1.Column)({ type: 'int', name: 'input_money', default: 0 }),
+    (0, typeorm_1.Column)({ type: 'int', name: 'inputMoney', default: 0 }),
     __metadata("design:type", Number)
-], AccountBook.prototype, "input_money", void 0);
+], AccountBook.prototype, "inputMoney", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
@@ -70,9 +70,9 @@ __decorate([
         example: 30000,
         description: '현재 가계부에서 남은 금액입니다. 지출을 할때마다 업데이트됩니다.',
     }),
-    (0, typeorm_1.Column)({ type: 'int', name: 'current_money', default: 0 }),
+    (0, typeorm_1.Column)({ type: 'int', name: 'currentMoney', default: 0 }),
     __metadata("design:type", Number)
-], AccountBook.prototype, "current_money", void 0);
+], AccountBook.prototype, "currentMoney", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsBooleanString)(),
@@ -80,13 +80,13 @@ __decorate([
         example: 'true',
         description: 'soft delete를 하기위한 설정입니다. string형식으로 true, false를 작성하되, true는 삭제된 가계부이고 false는 삭제가 안된 가계부입니다. 가계부를 불러올 때 false인 가계부를 불러와야힙니다.',
     }),
-    (0, typeorm_1.Column)({ type: 'boolean', name: 'is_deleted', default: false }),
+    (0, typeorm_1.Column)({ type: 'boolean', name: 'isDeleted', default: false }),
     __metadata("design:type", Boolean)
-], AccountBook.prototype, "is_deleted", void 0);
+], AccountBook.prototype, "isDeleted", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'varchar',
-        name: 'created_at',
+        name: 'createdAt',
         default: null,
         nullable: true,
     }),
@@ -95,7 +95,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({
         type: 'varchar',
-        name: 'updated_at',
+        name: 'updatedAt',
         default: null,
         nullable: true,
     }),
@@ -104,7 +104,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({
         type: 'varchar',
-        name: 'deleted_at',
+        name: 'deletedAt',
         default: null,
         nullable: true,
     }),
@@ -113,9 +113,9 @@ __decorate([
 __decorate([
     (0, typeorm_1.OneToMany)(() => TodayExpenses_1.TodayExpenses, (todayExpenses) => todayExpenses.accountBookId),
     __metadata("design:type", TodayExpenses_1.TodayExpenses)
-], AccountBook.prototype, "TodayExpenses", void 0);
+], AccountBook.prototype, "todayExpenses", void 0);
 AccountBook = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)('account_books')
 ], AccountBook);
 exports.AccountBook = AccountBook;
 //# sourceMappingURL=AccountBook.js.map
